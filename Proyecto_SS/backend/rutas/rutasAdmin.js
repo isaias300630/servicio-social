@@ -1,6 +1,6 @@
 // Rutas del administrador: catalogo de roles y alta de personal.
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { sql, getPool } = require('../db');
 
 const router = express.Router();

@@ -1,6 +1,6 @@
 // Rutas de acceso: login (con JWT) y alta de alumnos desde el formulario.
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { sql, getPool } = require('../db');
 
