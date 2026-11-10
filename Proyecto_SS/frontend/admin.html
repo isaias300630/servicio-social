@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador - TecNM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <main class="login">
+        <section class="login__content">
+            <h1 class="login__title">Alta de Personal</h1>
+            <form class="form-register" id="adminForm">
+
+                <div class="form__field">
+                    <label class="login__label">Rol a asignar:</label>
+                    <select class="form__input" id="rolSelect" required>
+                        <option value="">Cargando roles...</option>
+                    </select>
+                </div>
+
+                <div class="form__field">
+                    <input class="form__input" type="text" id="nombre" placeholder="Nombre(s)" required>
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="text" id="paterno" placeholder="Apellido Paterno" required>
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="text" id="materno" placeholder="Apellido Materno">
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="text" id="departamento" placeholder="Departamento (Ej. Gestión Tecnológica)">
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="email" id="correo" placeholder="Correo Institucional" required>
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="password" id="password" placeholder="Contraseña de acceso" required>
+                </div>
+
+                <button class="form__button" type="submit">Registrar Usuario</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

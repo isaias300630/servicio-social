@@ -1,0 +1,138 @@
+*, *::after, 
+*::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+}
+
+
+
+html {
+   box-sizing: inherit;
+   font-size: 62.5%;
+
+}
+
+body {
+    font-size: 1.6rem;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #000;
+
+}
+
+
+
+:is(h1, h2, h3, h4) {
+    font-family: 'Open Sans', sans-serif;
+    
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    
+
+}
+
+.login__content{
+    background-color:rgb(153, 146, 146);
+    border-radius: 1rem;
+    padding: 4rem;
+    max-width: 45rem;
+    width: 90%;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,0,0.2);
+
+
+}
+
+.login__title{
+    color: rgb(113, 202, 253);
+    font-size: 3.2rem;
+    text-align: center;
+    margin-bottom: 3.6rem;
+
+}
+
+.login__nav{
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.login__link{
+    display: block;
+    color: #e0e0e0;
+}
+
+.login__link:first-child{
+    margin-bottom: 1.5rem;
+}
+
+
+.form__field{
+    margin-bottom: 3rem;
+
+}
+
+.form__label{
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #e0e0e0;
+    
+
+}
+
+.form__input{
+    width: 100%;
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    background-color: #1a1a1a;
+    border: 1px solid #333333;
+    color: white;
+    outline: none;
+    
+
+}
+
+.form__input:focus,
+.form__input:active
+{
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 0 3px rgba(255,215,0,0.3);
+}
+
+.form__button{
+    width: 100%;
+    padding: 1.5rem;
+    background-color: rgb(0, 174, 255);
+    color: black;
+    border: none;
+    border-radius: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba (255,215,0,0.4);
+}
+
+@media (hover: hover)and (pointer: fine) {
+    .form__button:hover {
+        background-color: #00e6db;
+        transform: translateY(-2px);
+    }
+}
+
+
+
+
+
+

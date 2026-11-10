@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programas de Servicio Social</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+</head>
+<body>
+    <main class="pagina">
+        <h1 class="titulo">Programas de Servicio Social</h1>
+
+        <!-- Formulario para crear o editar -->
+        <section class="tarjeta">
+            <h2 class="subtitulo" id="tituloFormulario">Nuevo programa</h2>
+            <form id="formularioPrograma">
+                <input type="hidden" id="idPrograma">
+
+                <div class="campo">
+                    <label>Nombre del programa</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="campo">
+                    <label>Tipo</label>
+                    <input type="text" id="tipo" placeholder="Ej. Servicio en dependencia" required>
+                </div>
+                <div class="campo">
+                    <label>Horas requeridas</label>
+                    <input type="number" id="horas" value="500">
+                </div>
+                <div class="campo">
+                    <label>Cupo de alumnos</label>
+                    <input type="number" id="cupo" value="1">
+                </div>
+                <div class="campo" id="campoEstatus" style="display:none;">
+                    <label>Estatus</label>
+                    <input type="text" id="estatus">
+                </div>
+
+                <button type="submit" class="boton">Guardar</button>
+                <button type="button" class="boton boton-gris" id="botonCancelar" style="display:none;">Cancelar</button>
+            </form>
+        </section>
+
+        <!-- Lista de programas -->
+        <section class="tarjeta">
+            <h2 class="subtitulo">Lista de programas</h2>
+            <table class="tabla">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Estatus</th>
+                        <th>Horas</th>
+                        <th>Cupo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpoTabla">
+                    <tr><td colspan="6">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="js/programas.js"></script>
+</body>
+</html>

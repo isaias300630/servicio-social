@@ -1,0 +1,100 @@
+/* Estilos de la pagina de programas */
+
+.pagina {
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+}
+
+.titulo {
+    color: rgb(113, 202, 253);
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.subtitulo {
+    color: #e0e0e0;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.tarjeta {
+    background-color: rgb(153, 146, 146);
+    border-radius: 1rem;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.6);
+}
+
+.campo {
+    margin-bottom: 2rem;
+}
+
+.campo label {
+    display: block;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.campo input {
+    width: 100%;
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    outline: none;
+}
+
+.boton {
+    padding: 1.2rem 2.5rem;
+    background-color: rgb(0, 174, 255);
+    color: black;
+    border: none;
+    border-radius: 0.8rem;
+    font-size: 1.6rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.boton-gris {
+    background-color: #888;
+    margin-left: 1rem;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    color: #1a1a1a;
+}
+
+.tabla th, .tabla td {
+    padding: 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid #777;
+    font-size: 1.5rem;
+}
+
+.tabla th {
+    color: #000;
+    font-weight: bold;
+}
+
+.boton-chico {
+    padding: 0.6rem 1.2rem;
+    background-color: rgb(0, 174, 255);
+    color: black;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.boton-rojo {
+    background-color: #e74c3c;
+    color: white;
+}

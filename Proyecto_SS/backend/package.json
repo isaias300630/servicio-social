@@ -1,0 +1,20 @@
+{
+  "name": "proyecto_ss",
+  "version": "1.0.0",
+  "description": "Sistema de Gestion del Servicio Social - TecNM Culiacan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.3",
+    "mssql": "^11.0.1",
+    "multer": "^1.4.5-lts.1"
+  }
+}
