@@ -26,8 +26,7 @@ begin
       and u.activo_usu = 1;
 end
 go
-
-create procedure sp_RegistrarAlumno
+create or alter procedure sp_RegistrarAlumno
     @numero_control varchar(20),
     @correo varchar(100),
     @password varchar(255),
@@ -41,6 +40,9 @@ as
 begin
     set nocount on;
     begin try
+        if lower(@correo) not like '%_@culiacan.tecnm.mx'
+            raiserror('El correo debe terminar en @culiacan.tecnm.mx', 16, 1);
+
         begin tran;
 
         declare @id_rol_alumno int;
@@ -49,7 +51,7 @@ begin
         declare @nuevo_id_usuario int;
 
         insert into usuarios (correousu, contrausu, id_rol, activo_usu)
-        values (@correo, @password, @id_rol_alumno, 1);
+        values (lower(@correo), @password, @id_rol_alumno, 1);
 
         set @nuevo_id_usuario = scope_identity();
 

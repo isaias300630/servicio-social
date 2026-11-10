@@ -11,6 +11,13 @@ router.post('/webhook/forms', async (req, res) => {
     try {
         const { nControl, nombre, apePaterno, apeMaterno, correo, carrera, semestre } = req.body;
 
+        // El correo del alumno tiene que ser el institucional.
+        const correoAlumno = (correo || '').trim().toLowerCase();
+        if (!/^[a-z0-9._%+-]+@culiacan\.tecnm\.mx$/.test(correoAlumno)) {
+            return res.status(400).json({ success: false, mensaje: 'El correo debe terminar en @culiacan.tecnm.mx' });
+        }
+
+
         // Contrasena por defecto, cifrada antes de guardarse.
         const contrasenaCifrada = await bcrypt.hash('12345', 10);
 
@@ -21,7 +28,7 @@ router.post('/webhook/forms', async (req, res) => {
         const pool = await getPool();
         await pool.request()
             .input('numero_control', sql.VarChar, nControl)
-            .input('correo', sql.VarChar, correo)
+            .input('correo', sql.VarChar, correoAlumno)
             .input('password', sql.VarChar, contrasenaCifrada)
             .input('nombre', sql.VarChar, nombre)
             .input('paterno', sql.VarChar, apePaterno)
