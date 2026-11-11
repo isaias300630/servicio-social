@@ -1,7 +1,20 @@
+// Token que se guardo al iniciar sesion.
+const token = localStorage.getItem('token');
+
 // Carga los roles disponibles al abrir la pagina.
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/admin/roles');
+        const response = await fetch('/api/admin/roles', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        // Si no hay sesion de administrador, lo regresamos al login.
+        if (response.status === 401 || response.status === 403) {
+            alert('Necesitas iniciar sesión como Administrador.');
+            window.location.href = 'index.html';
+            return;
+        }
+
         const roles = await response.json();
 
         const select = document.getElementById('rolSelect');
@@ -31,9 +44,12 @@ document.getElementById('adminForm').addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await fetch('http://localhost:3000/api/admin/crear-usuario', {
+        const response = await fetch('/api/admin/crear-usuario', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
             body: JSON.stringify(payload)
         });
 
@@ -47,6 +63,6 @@ document.getElementById('adminForm').addEventListener('submit', async (e) => {
         }
     } catch (error) {
         console.error('Error de conexión:', error);
-        alert('No se pudo conectar con el servidor. Verifica que Node.js esté corriendo.');
+        alert('No se pudo conectar con el servidor.');
     }
 });

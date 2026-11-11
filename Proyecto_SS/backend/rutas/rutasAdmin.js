@@ -2,11 +2,20 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { sql, getPool } = require('../db');
+const verificarSesion = require('./verificarSesion');
 
 const router = express.Router();
 
-// Catalogo de roles 
-router.get('/roles', async (req, res) => {
+// Candado extra: deja pasar solo al Administrador.
+function soloAdministrador(req, res, next) {
+    if (req.usuario.rol !== 'Administrador') {
+        return res.status(403).json({ success: false, mensaje: 'Solo el Administrador puede hacer esto' });
+    }
+    next();
+}
+
+// Catalogo de roles (sin incluir Alumno, que se da de alta por el forms).
+router.get('/roles', verificarSesion, soloAdministrador, async (req, res) => {
     try {
         const pool = await getPool();
         const result = await pool.request().query(`
@@ -17,15 +26,15 @@ router.get('/roles', async (req, res) => {
         res.json(result.recordset);
     } catch (err) {
         console.error('Error al obtener roles:', err);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ success: false, mensaje: 'Error interno del servidor' });
     }
 });
 
 // Alta de personal (jefe de SS, jefe de vinculacion u otro admin).
-router.post('/crear-usuario', async (req, res) => {
+router.post('/crear-usuario', verificarSesion, soloAdministrador, async (req, res) => {
     const { nombre, paterno, materno, correo, password, id_rol, departamento } = req.body;
 
-    // Validacion basica: que no vengan vacios los datos obligatorios.
+    // Revisamos que no vengan vacios los datos obligatorios.
     if (!nombre || !paterno || !correo || !password || !id_rol) {
         return res.status(400).json({ success: false, mensaje: 'Faltan datos obligatorios' });
     }
@@ -45,8 +54,12 @@ router.post('/crear-usuario', async (req, res) => {
             .input('depto', sql.VarChar, departamento)
             .execute('sp_RegistrarCoordinador');
 
-        res.json({ success: true, mensaje: 'Usuario creado exitosamente.' });
+        res.status(201).json({ success: true, mensaje: 'Usuario creado exitosamente.' });
     } catch (err) {
+        // 2627 y 2601 son los errores de SQL cuando el correo ya existe.
+        if (err.number === 2627 || err.number === 2601) {
+            return res.status(409).json({ success: false, mensaje: 'Ese correo ya esta registrado' });
+        }
         console.error('Error creando usuario:', err);
         res.status(500).json({ success: false, mensaje: 'Error al registrar el usuario' });
     }
