@@ -53,13 +53,25 @@ router.post('/crear-usuario', verificarSesion, soloAdministrador, async (req, re
         return res.status(400).json({ success: false, mensaje: 'Faltan datos obligatorios' });
     }
 
+    // El correo del personal debe ser institucional.
+    const correoPersonal = (correo || '').trim().toLowerCase();
+    if (!esCorreoInstitucional(correoPersonal)) {
+        return res.status(400).json({ success: false, mensaje: 'El correo debe ser institucional.' });
+    }
+
+    
+    // La contrasena debe cumplir la politica.
+    if (!cumplePolitica(password)) {
+        return res.status(400).json({ success: false, mensaje: MENSAJE_POLITICA });
+    }
+
     try {
         // Ciframos la contrasena antes de guardarla.
         const contrasenaCifrada = await bcrypt.hash(password, 10);
 
         const pool = await getPool();
         await pool.request()
-            .input('correo', sql.VarChar, correo)
+            .input('correo', sql.VarChar, correoPersonal)
             .input('password', sql.VarChar, contrasenaCifrada)
             .input('id_rol', sql.Int, parseInt(id_rol))
             .input('nombre', sql.VarChar, nombre)
