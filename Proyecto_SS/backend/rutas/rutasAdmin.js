@@ -6,6 +6,20 @@ const verificarSesion = require('./verificarSesion');
 
 const router = express.Router();
 
+// Correo institucional (misma lista que en rutasAcceso).
+const DOMINIOS = ['culiacan.tecnm.mx'];
+function esCorreoInstitucional(correo) {
+    const c = (correo || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) return false;
+    return DOMINIOS.includes(c.split('@')[1]);
+}
+// Politica de contrasena: entre 10 y 64, una mayuscula y un numero.
+const MIN_PASS = 10, MAX_PASS = 64;
+function cumplePolitica(p) {
+    if (typeof p !== 'string' || p.length < MIN_PASS || p.length > MAX_PASS) return false;
+    return /[A-Z]/.test(p) && /\d/.test(p);
+}
+const MENSAJE_POLITICA = `La contraseña debe tener entre ${MIN_PASS} y ${MAX_PASS} caracteres, al menos una mayúscula y un número.`;
 // Candado extra: deja pasar solo al Administrador.
 function soloAdministrador(req, res, next) {
     if (req.usuario.rol !== 'Administrador') {
