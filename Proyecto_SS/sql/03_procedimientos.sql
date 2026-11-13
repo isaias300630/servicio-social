@@ -58,7 +58,11 @@ begin
         insert into estudiantes (numero_control, id_usuario, nombrees, apellido_paterno_es, apellido_materno_es, carrera, semestre, plan_estudios)
         values (@numero_control, @nuevo_id_usuario, @nombre, @paterno, @materno, @carrera, @semestre, @plan_estudios);
 
+        insert into bitacora_logs (id_usuario, accion, detalles)
+        values (@nuevo_id_usuario, 'Alta de alumno',
+                'Alumno registrado desde el formulario: ' + @numero_control);
         commit tran;
+        
     end try
     begin catch
         if @@trancount > 0

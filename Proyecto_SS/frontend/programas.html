@@ -14,36 +14,105 @@
     <main class="pagina">
         <h1 class="titulo">Programas de Servicio Social</h1>
 
-        <nav style="text-align:center; margin-bottom:16px;">
+        <nav class="barra">
             <a href="cuenta.html" class="boton">Cambiar contraseña</a>
             <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
         </nav>
-        
+
         <!-- Formulario para crear o editar -->
         <section class="tarjeta">
             <h2 class="subtitulo" id="tituloFormulario">Nuevo programa</h2>
             <form id="formularioPrograma">
                 <input type="hidden" id="idPrograma">
 
+                <div class="rejilla">
+                    <div class="campo">
+                        <label for="folio">Número de folio</label>
+                        <input type="text" id="folio" maxlength="50">
+                    </div>
+                    <div class="campo">
+                        <label for="nombre">Nombre del programa *</label>
+                        <input type="text" id="nombre" maxlength="150" required>
+                    </div>
+                    <div class="campo">
+                        <label for="tipo">Tipo *</label>
+                        <input type="text" id="tipo" maxlength="50" placeholder="Ej. Servicio en dependencia" required>
+                    </div>
+                    <div class="campo">
+                        <label for="origen">Origen</label>
+                        <select id="origen">
+                            <option value="banco">Banco de programas</option>
+                            <option value="propuesta">Propuesta de alumno</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="dependencia">Dependencia</label>
+                        <select id="dependencia">
+                            <option value="">— Sin dependencia —</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="periodo">Periodo</label>
+                        <select id="periodo">
+                            <option value="">— Sin periodo —</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="plan">Plan educativo</label>
+                        <select id="plan">
+                            <option value="">— Sin especificar —</option>
+                            <option value="Ambos">Ambos</option>
+                            <option value="Plan Nuevo">Plan Nuevo</option>
+                            <option value="Plan Viejo">Plan Viejo</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="area">Área o departamento</label>
+                        <input type="text" id="area" maxlength="100">
+                    </div>
+                    <div class="campo">
+                        <label for="responsable">Nombre del responsable</label>
+                        <input type="text" id="responsable" maxlength="100">
+                    </div>
+                    <div class="campo">
+                        <label for="puesto">Puesto del responsable</label>
+                        <input type="text" id="puesto" maxlength="100">
+                    </div>
+                    <div class="campo">
+                        <label for="horas">Horas requeridas *</label>
+                        <input type="number" id="horas" value="500" min="1" max="1000" required>
+                    </div>
+                    <div class="campo">
+                        <label for="cupo">Cupo de alumnos *</label>
+                        <input type="number" id="cupo" value="1" min="1" max="500" required>
+                    </div>
+                </div>
+
                 <div class="campo">
-                    <label>Nombre del programa</label>
-                    <input type="text" id="nombre" required>
+                    <label for="horario">Horario y perfil del alumno</label>
+                    <input type="text" id="horario" maxlength="255" placeholder="Ej. Lunes a viernes 8:00-12:00, conocimientos de Excel">
                 </div>
                 <div class="campo">
-                    <label>Tipo</label>
-                    <input type="text" id="tipo" placeholder="Ej. Servicio en dependencia" required>
+                    <label for="objetivo">Objetivo</label>
+                    <textarea id="objetivo" rows="3"></textarea>
                 </div>
                 <div class="campo">
-                    <label>Horas requeridas</label>
-                    <input type="number" id="horas" value="500">
+                    <label for="actividades">Actividades a realizar</label>
+                    <textarea id="actividades" rows="4"></textarea>
                 </div>
-                <div class="campo">
-                    <label>Cupo de alumnos</label>
-                    <input type="number" id="cupo" value="1">
-                </div>
+
+                <!-- Solo se muestran al editar -->
                 <div class="campo" id="campoEstatus" style="display:none;">
-                    <label>Estatus</label>
-                    <input type="text" id="estatus">
+                    <label for="estatus">Estatus</label>
+                    <select id="estatus">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="rechazado">Rechazado</option>
+                    </select>
+                </div>
+                <div class="campo" id="campoMotivo" style="display:none;">
+                    <label for="motivo">Motivo del rechazo *</label>
+                    <textarea id="motivo" rows="2" maxlength="300"></textarea>
                 </div>
 
                 <button type="submit" class="boton">Guardar</button>
@@ -54,21 +123,36 @@
         <!-- Lista de programas -->
         <section class="tarjeta">
             <h2 class="subtitulo">Lista de programas</h2>
-            <table class="tabla">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Tipo</th>
-                        <th>Estatus</th>
-                        <th>Horas</th>
-                        <th>Cupo</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpoTabla">
-                    <tr><td colspan="6">Cargando...</td></tr>
-                </tbody>
-            </table>
+
+            <div class="buscador">
+                <input type="search" id="buscar" placeholder="Buscar por nombre, folio, tipo, área, responsable o dependencia">
+                <select id="filtroEstatus">
+                    <option value="">Todos los estatus</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="aprobado">Aprobado</option>
+                    <option value="rechazado">Rechazado</option>
+                </select>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Dependencia</th>
+                            <th>Estatus</th>
+                            <th>Horas</th>
+                            <th>Cupo (disp./total)</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                        <tr><td colspan="8">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 
