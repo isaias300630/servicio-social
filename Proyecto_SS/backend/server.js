@@ -7,13 +7,11 @@ const { getPool } = require('./db');
 const rutasAcceso = require('./rutas/rutasAcceso');
 const rutasAdmin = require('./rutas/rutasAdmin');
 const rutasProgramas = require('./rutas/rutasProgramas');
-
 const rutasCuenta = require('./rutas/rutasCuenta');   
-app.use('/api', rutasCuenta);                          
+
 const app = express();
 app.use(express.json());
 app.use(cors());
-
 
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
@@ -21,6 +19,7 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 app.use('/api', rutasAcceso);
 app.use('/api/admin', rutasAdmin);
 app.use('/api', rutasProgramas);
+app.use('/api', rutasCuenta);       
 
 const PORT = process.env.PORT || 3000;
 
