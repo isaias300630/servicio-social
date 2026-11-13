@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar contraseña</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <main class="login">
+        <section class="login__content">
+            <h1 class="login__title">Cambiar contraseña</h1>
+            <form class="form-register" id="formContrasena">
+                <div class="form__field">
+                    <input class="form__input" type="password" id="actual" placeholder="Contraseña actual" required>
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="password" id="nueva" placeholder="Nueva contraseña" maxlength="64" required>
+                </div>
+                <div class="form__field">
+                    <input class="form__input" type="password" id="confirmacion" placeholder="Confirmar nueva" maxlength="64" required>
+                </div>
+                <button class="form__button" type="submit">Actualizar contraseña</button>
+            </form>
+            <nav class="login__nav">
+                <a class="login__link" href="#" id="volverPanel">Volver al panel</a>
+                <a class="login__link" href="#" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </section>
+    </main>
+    <script src="js/cuenta.js"></script>
+</body>
+</html>

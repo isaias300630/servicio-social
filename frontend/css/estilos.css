@@ -136,3 +136,8 @@ a{
 
 
 
+
+/* Oculta elementos marcados con hidden */
+[hidden] {
+    display: none !important;
+}

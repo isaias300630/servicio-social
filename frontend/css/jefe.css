@@ -1,0 +1,190 @@
+/* Estilos del panel del Jefe de Oficina */
+
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.encabezado__rol {
+    color: rgb(113, 202, 253);
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.encabezado__nombre {
+    color: #fff;
+    font-size: 3rem;
+    margin: 0.5rem 0;
+}
+
+.encabezado__periodo {
+    color: #aaa;
+    font-size: 1.5rem;
+}
+
+.barra--derecha {
+    margin-bottom: 0;
+}
+
+/* Tarjetas con numeros */
+.resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+
+.dato {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-top: 0.4rem solid rgb(0, 174, 255);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dato--pendiente { border-top-color: #f1c40f; }
+.dato--aprobado  { border-top-color: #2ecc71; }
+.dato--rechazado { border-top-color: #e74c3c; }
+
+.dato__numero {
+    color: #fff;
+    font-size: 3.2rem;
+    font-weight: 800;
+}
+
+.dato__texto {
+    color: #aaa;
+    font-size: 1.4rem;
+}
+
+.seccion {
+    color: #e0e0e0;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Accesos a cada funcion */
+.funciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+
+.funcion {
+    background-color: rgb(153, 146, 146);
+    border-radius: 1rem;
+    padding: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: #1a1a1a;
+    box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+a.funcion:hover {
+    transform: translateY(-3px);
+    background-color: rgb(170, 164, 164);
+}
+
+.funcion--principal {
+    background-color: rgb(0, 174, 255);
+}
+
+a.funcion--principal:hover {
+    background-color: #00e6db;
+}
+
+.funcion--pronto {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.funcion__titulo {
+    font-size: 1.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.funcion__texto {
+    font-size: 1.4rem;
+}
+
+.etiqueta {
+    font-size: 1.1rem;
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 0.2rem 0.8rem;
+    border-radius: 1rem;
+}
+
+.globo {
+    font-size: 1.2rem;
+    background-color: #f1c40f;
+    color: #000;
+    min-width: 2.4rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 1.2rem;
+    text-align: center;
+}
+
+/* Lista de pendientes */
+.lista-pendientes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lista-pendientes li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid #777;
+    font-size: 1.5rem;
+    color: #1a1a1a;
+}
+
+.lista-pendientes li:last-child {
+    border-bottom: none;
+}
+
+.lista-pendientes small {
+    display: block;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.lista-pendientes .boton-chico {
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .encabezado__nombre {
+        font-size: 2.4rem;
+    }
+    .barra--derecha {
+        width: 100%;
+    }
+    .barra--derecha .boton {
+        flex: 1;
+        text-align: center;
+        padding: 1.2rem 1rem;
+    }
+}

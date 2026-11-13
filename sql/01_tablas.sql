@@ -23,7 +23,7 @@ create table estudiantes (
     nombrees varchar(100) not null,
     apellido_paterno_es varchar(100) not null,
     apellido_materno_es varchar(100),
-    curp char(18) unique,
+    curp char(18),
     carrera varchar(100),
     semestre int,
     plan_estudios varchar(50),
