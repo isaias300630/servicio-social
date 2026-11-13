@@ -6,6 +6,14 @@ const { sql, getPool } = require('../db');
 
 const router = express.Router();
 
+// Dominios institucionales permitidos. 
+const DOMINIOS = ['culiacan.tecnm.mx'];
+function esCorreoInstitucional(correo) {
+    const c = (correo || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) return false;
+    return DOMINIOS.includes(c.split('@')[1]);
+}
+
 // Alta de alumno desde el formulario institucional.
 router.post('/webhook/forms', async (req, res) => {
     try {
@@ -54,11 +62,16 @@ router.post('/login', async (req, res) => {
     if (!correo_institucional || !password) {
         return res.status(400).json({ success: false, mensaje: 'Faltan el correo o la contrasena' });
     }
-
+    
+    // El correo debe ser institucional.
+    const correoLogin = (correo_institucional || '').trim().toLowerCase();
+    if (!esCorreoInstitucional(correoLogin)) {
+        return res.status(400).json({ success: false, mensaje: 'Usa tu correo institucional.' });
+    }
     try {
         const pool = await getPool();
         const result = await pool.request()
-            .input('correo', sql.VarChar, correo_institucional)
+            .input('correo', sql.VarChar, correoLogin)
             .execute('sp_ValidarLogin');
 
         // Si no existe el correo o el usuario esta inactivo.
