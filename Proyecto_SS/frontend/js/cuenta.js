@@ -1,7 +1,17 @@
+// Cambio de contraseña para cualquier usuario con sesion.
 const token = localStorage.getItem('token');
+const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 if (!token) window.location.href = 'index.html';
 
-// Cambiar contraseña
+
+const paneles = { 'Administrador': 'admin.html', 'Jefe de Oficina de SS': 'jefe.html' };
+const enlaceVolver = document.getElementById('volverPanel');
+if (paneles[usuario.rol]) {
+    enlaceVolver.href = paneles[usuario.rol];
+} else {
+    enlaceVolver.hidden = true;
+}
+
 document.getElementById('formContrasena').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -20,7 +30,7 @@ document.getElementById('formContrasena').addEventListener('submit', async (e) =
         const res = await fetch('/api/cambiar-contrasena', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-            body: JSON.stringify({ actual, nueva })
+            body: JSON.stringify({ actual, nueva, confirmacion })
         });
 
         const data = await res.json();
@@ -32,7 +42,6 @@ document.getElementById('formContrasena').addEventListener('submit', async (e) =
     }
 });
 
-// Cerrar sesión
 document.getElementById('cerrarSesion').addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.clear();

@@ -1,5 +1,4 @@
-// Configuración y conexión única a Azure SQL.
-// Lee las credenciales desde el archivo .env 
+// Conexion a Azure SQL con los datos del archivo .env.
 require('dotenv').config();
 const sql = require('mssql');
 
@@ -14,7 +13,7 @@ const dbConfig = {
     }
 };
 
-// Pool reutilizable: se crea una sola vez y se comparte en toda la app.
+// La conexion se crea una sola vez y se reutiliza en todo el servidor.
 let poolPromise;
 
 function getPool() {

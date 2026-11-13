@@ -3,23 +3,11 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { sql, getPool } = require('../db');
 const verificarSesion = require('./verificarSesion');
+const { responderErrorSql } = require('../errores');
+const { esCorreoInstitucional, cumplePolitica, MENSAJE_POLITICA, esIdValido, esTextoValido } = require('../validaciones');
 
 const router = express.Router();
 
-// Correo institucional (misma lista que en rutasAcceso).
-const DOMINIOS = ['culiacan.tecnm.mx'];
-function esCorreoInstitucional(correo) {
-    const c = (correo || '').trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) return false;
-    return DOMINIOS.includes(c.split('@')[1]);
-}
-// Politica de contrasena: entre 10 y 64, una mayuscula y un numero.
-const MIN_PASS = 10, MAX_PASS = 64;
-function cumplePolitica(p) {
-    if (typeof p !== 'string' || p.length < MIN_PASS || p.length > MAX_PASS) return false;
-    return /[A-Z]/.test(p) && /\d/.test(p);
-}
-const MENSAJE_POLITICA = `La contraseña debe tener entre ${MIN_PASS} y ${MAX_PASS} caracteres, al menos una mayúscula y un número.`;
 // Candado extra: deja pasar solo al Administrador.
 function soloAdministrador(req, res, next) {
     if (req.usuario.rol !== 'Administrador') {
@@ -28,66 +16,55 @@ function soloAdministrador(req, res, next) {
     next();
 }
 
-// Catalogo de roles (sin incluir Alumno, que se da de alta por el forms).
+// Roles que se pueden asignar 
 router.get('/roles', verificarSesion, soloAdministrador, async (req, res) => {
     try {
         const pool = await getPool();
-        const result = await pool.request().query(`
-            select id_rol, nombre_rol
-            from catalogo_roles
-            where nombre_rol != 'Alumno'
-        `);
-        res.json(result.recordset);
+        const resultado = await pool.request().execute('sp_ObtenerRoles');
+        res.json(resultado.recordset);
     } catch (err) {
-        console.error('Error al obtener roles:', err);
-        res.status(500).json({ success: false, mensaje: 'Error interno del servidor' });
+        responderErrorSql(res, err, 'Error al obtener roles');
     }
 });
 
-// Alta de personal (jefe de SS, jefe de vinculacion u otro admin).
+// Alta de personal (Jefe de Oficina, Jefe de Vinculacion u otro Administrador).
 router.post('/crear-usuario', verificarSesion, soloAdministrador, async (req, res) => {
     const { nombre, paterno, materno, correo, password, id_rol, departamento } = req.body;
 
-    // Revisamos que no vengan vacios los datos obligatorios.
-    if (!nombre || !paterno || !correo || !password || !id_rol) {
+    // Datos obligatorios.
+    if (!esTextoValido(nombre, 100) || !esTextoValido(paterno, 100) || !correo || !password || !id_rol) {
         return res.status(400).json({ success: false, mensaje: 'Faltan datos obligatorios' });
     }
-
-    // El correo del personal debe ser institucional.
-    const correoPersonal = (correo || '').trim().toLowerCase();
-    if (!esCorreoInstitucional(correoPersonal)) {
-        return res.status(400).json({ success: false, mensaje: 'El correo debe ser institucional.' });
+    if (!esCorreoInstitucional(correo)) {
+        return res.status(400).json({ success: false, mensaje: 'El correo debe ser institucional (@culiacan.tecnm.mx)' });
     }
-
-    
-    // La contrasena debe cumplir la politica.
+    // Politica de contrasenas.
     if (!cumplePolitica(password)) {
         return res.status(400).json({ success: false, mensaje: MENSAJE_POLITICA });
     }
+    if (!esIdValido(id_rol)) {
+        return res.status(400).json({ success: false, mensaje: 'El rol no es válido' });
+    }
 
     try {
-        // Ciframos la contrasena antes de guardarla.
         const contrasenaCifrada = await bcrypt.hash(password, 10);
 
+        // El procedimiento revisa que el rol exista y que el correo no este repetido.
         const pool = await getPool();
         await pool.request()
-            .input('correo', sql.VarChar, correoPersonal)
-            .input('password', sql.VarChar, contrasenaCifrada)
-            .input('id_rol', sql.Int, parseInt(id_rol))
-            .input('nombre', sql.VarChar, nombre)
-            .input('paterno', sql.VarChar, paterno)
-            .input('materno', sql.VarChar, materno)
-            .input('depto', sql.VarChar, departamento)
-            .execute('sp_RegistrarCoordinador');
+            .input('correo', sql.VarChar(100), correo.trim().toLowerCase())
+            .input('password', sql.VarChar(255), contrasenaCifrada)
+            .input('id_rol', sql.Int, Number(id_rol))
+            .input('nombre', sql.VarChar(100), nombre.trim())
+            .input('paterno', sql.VarChar(100), paterno.trim())
+            .input('materno', sql.VarChar(100), materno ? String(materno).trim() : null)
+            .input('depto', sql.VarChar(100), departamento ? String(departamento).trim() : null)
+            .input('id_admin', sql.Int, req.usuario.id_usuario)
+            .execute('sp_RegistrarPersonal');
 
-        res.status(201).json({ success: true, mensaje: 'Usuario creado exitosamente.' });
+        res.status(201).json({ success: true, mensaje: 'Usuario registrado correctamente' });
     } catch (err) {
-        // 2627 y 2601 son los errores de SQL cuando el correo ya existe.
-        if (err.number === 2627 || err.number === 2601) {
-            return res.status(409).json({ success: false, mensaje: 'Ese correo ya esta registrado' });
-        }
-        console.error('Error creando usuario:', err);
-        res.status(500).json({ success: false, mensaje: 'Error al registrar el usuario' });
+        responderErrorSql(res, err, 'Error creando usuario');
     }
 });
 

@@ -1,5 +1,4 @@
-// Middleware: revisa que la peticion traiga un token valido.
-// Se usa en las rutas que quieras proteger, poniendolo antes del controlador.
+// Revisa que la peticion traiga un token valido antes de entrar a una ruta protegida.
 const jwt = require('jsonwebtoken');
 
 function verificarSesion(req, res, next) {
@@ -13,7 +12,7 @@ function verificarSesion(req, res, next) {
 
     try {
         const datos = jwt.verify(token, process.env.CLAVE_SECRETA);
-        req.usuario = datos; // guardamos los datos del usuario para usarlos despues
+        req.usuario = datos; // datos del usuario disponibles en la ruta
         next();
     } catch (err) {
         return res.status(401).json({ success: false, mensaje: 'Sesion invalida o expirada' });

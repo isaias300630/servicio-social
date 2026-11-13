@@ -98,3 +98,89 @@
     background-color: #e74c3c;
     color: white;
 }
+
+/* ---- Campos nuevos: selects, textareas, rejilla y buscador ---- */
+
+.campo select,
+.campo textarea,
+.buscador input,
+.buscador select {
+    width: 100%;
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    outline: none;
+}
+
+.campo textarea {
+    resize: vertical;
+}
+
+/* Dos columnas en pantalla grande, una en celular */
+.rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+    column-gap: 2rem;
+}
+
+.barra {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.barra .boton {
+    text-decoration: none;
+}
+
+.barra .boton-gris {
+    margin-left: 0;
+}
+
+.buscador {
+    display: grid;
+    grid-template-columns: 1fr 20rem;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 600px) {
+    .buscador {
+        grid-template-columns: 1fr;
+    }
+    .pagina {
+        padding: 2rem 1.6rem;
+    }
+    .tarjeta {
+        padding: 2rem 1.6rem;
+    }
+}
+
+/* La tabla se desliza de lado en celular en vez de desbordarse */
+.tabla-contenedor {
+    overflow-x: auto;
+}
+
+/* Que el folio no se parta en varias lineas */
+.tabla td:first-child {
+    white-space: nowrap;
+}
+
+.estatus {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 1rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.estatus-pendiente { background-color: #f1c40f; color: #000; }
+.estatus-aprobado  { background-color: #2ecc71; color: #000; }
+.estatus-rechazado { background-color: #e74c3c; color: #fff; }

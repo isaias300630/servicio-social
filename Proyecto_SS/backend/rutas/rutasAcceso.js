@@ -3,112 +3,128 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { sql, getPool } = require('../db');
+const { responderErrorSql } = require('../errores');
+const { esCorreoInstitucional, esTextoValido, esEnteroEnRango } = require('../validaciones');
 
 const router = express.Router();
 
-// Dominios institucionales permitidos. 
-const DOMINIOS = ['culiacan.tecnm.mx'];
-function esCorreoInstitucional(correo) {
-    const c = (correo || '').trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) return false;
-    return DOMINIOS.includes(c.split('@')[1]);
-}
-
-// Alta de alumno desde el formulario institucional.
+// Alta de alumno desde el formulario del curso de induccion.
 router.post('/webhook/forms', async (req, res) => {
+    // Si hay clave secreta configurada, solo aceptamos peticiones que la traigan (las del Apps Script).
+    if (process.env.CLAVE_FORMS && req.headers['x-clave-forms'] !== process.env.CLAVE_FORMS) {
+        return res.status(401).json({ success: false, mensaje: 'No autorizado' });
+    }
+
+    const { nControl, nombre, apePaterno, apeMaterno, correo, carrera, semestre } = req.body;
+
+    // Datos obligatorios 
+    if (!nControl || !esTextoValido(nombre, 100) || !esTextoValido(apePaterno, 100) || !esTextoValido(carrera, 100) || !correo) {
+        return res.status(400).json({ success: false, mensaje: 'Faltan datos obligatorios' });
+    }
+
+    // Numero de control: 8 digitos, a veces con una letra al inicio.
+    const numeroControl = String(nControl).trim().toUpperCase();
+    if (!/^[A-Z]?\d{8}$/.test(numeroControl)) {
+        return res.status(400).json({ success: false, mensaje: 'El número de control no es válido' });
+    }
+
+    const correoAlumno = String(correo).trim().toLowerCase();
+    if (!esCorreoInstitucional(correoAlumno)) {
+        return res.status(400).json({ success: false, mensaje: 'El correo debe terminar en @culiacan.tecnm.mx' });
+    }
+
+    if (!esEnteroEnRango(semestre, 1, 15)) {
+        return res.status(400).json({ success: false, mensaje: 'El semestre no es válido' });
+    }
+
     try {
-        const { nControl, nombre, apePaterno, apeMaterno, correo, carrera, semestre } = req.body;
-
-        // El correo del alumno tiene que ser el institucional.
-        const correoAlumno = (correo || '').trim().toLowerCase();
-        if (!/^[a-z0-9._%+-]+@culiacan\.tecnm\.mx$/.test(correoAlumno)) {
-            return res.status(400).json({ success: false, mensaje: 'El correo debe terminar en @culiacan.tecnm.mx' });
-        }
-
-
         // Contrasena por defecto, cifrada antes de guardarse.
         const contrasenaCifrada = await bcrypt.hash('12345', 10);
 
-        // Regla de negocio: plan viejo y nuevo
-        const prefijoAnio = parseInt(nControl.substring(0, 2));
-        const planEstudios = prefijoAnio >= 23 ? 'Plan Nuevo' : 'Plan Viejo';
+        // Plan segun el anio del numero de control 
+        const anio = parseInt(numeroControl.replace(/^[A-Z]/, '').substring(0, 2));
+        const planEstudios = anio >= 23 ? 'Plan Nuevo' : 'Plan Viejo';
 
         const pool = await getPool();
         await pool.request()
-            .input('numero_control', sql.VarChar, nControl)
-            .input('correo', sql.VarChar, correoAlumno)
-            .input('password', sql.VarChar, contrasenaCifrada)
-            .input('nombre', sql.VarChar, nombre)
-            .input('paterno', sql.VarChar, apePaterno)
-            .input('materno', sql.VarChar, apeMaterno)
-            .input('carrera', sql.VarChar, carrera)
-            .input('semestre', sql.Int, parseInt(semestre))
-            .input('plan_estudios', sql.VarChar, planEstudios)
+            .input('numero_control', sql.VarChar(20), numeroControl)
+            .input('correo', sql.VarChar(100), correoAlumno)
+            .input('password', sql.VarChar(255), contrasenaCifrada)
+            .input('nombre', sql.VarChar(100), nombre.trim())
+            .input('paterno', sql.VarChar(100), apePaterno.trim())
+            .input('materno', sql.VarChar(100), apeMaterno ? String(apeMaterno).trim() : null)
+            .input('carrera', sql.VarChar(100), carrera.trim())
+            .input('semestre', sql.Int, Number(semestre))
+            .input('plan_estudios', sql.VarChar(50), planEstudios)
             .execute('sp_RegistrarAlumno');
 
-        console.log(`Alumno ${nombre} registrado (${planEstudios}).`);
-        res.status(200).json({ success: true, mensaje: 'Registro exitoso' });
+        console.log(`Alumno ${numeroControl} registrado (${planEstudios}).`);
+        res.status(201).json({ success: true, mensaje: 'Registro exitoso' });
     } catch (err) {
-        console.error('Error guardando alumno:', err);
-        res.status(500).json({ success: false, mensaje: 'Error interno del servidor' });
+        responderErrorSql(res, err, 'Error guardando alumno');
     }
 });
 
-// Login 
+// Login para todos los roles.
 router.post('/login', async (req, res) => {
     const { correo_institucional, password } = req.body;
 
-    // Validacion basica: que no vengan vacios.
     if (!correo_institucional || !password) {
-        return res.status(400).json({ success: false, mensaje: 'Faltan el correo o la contrasena' });
+        return res.status(400).json({ success: false, mensaje: 'Faltan el correo o la contraseña' });
     }
-    
-    // El correo debe ser institucional.
-    const correoLogin = (correo_institucional || '').trim().toLowerCase();
+
+    const correoLogin = String(correo_institucional).trim().toLowerCase();
     if (!esCorreoInstitucional(correoLogin)) {
-        return res.status(400).json({ success: false, mensaje: 'Usa tu correo institucional.' });
+        return res.status(400).json({ success: false, mensaje: 'Usa tu correo institucional' });
     }
+
     try {
         const pool = await getPool();
-        const result = await pool.request()
-            .input('correo', sql.VarChar, correoLogin)
+        const resultado = await pool.request()
+            .input('correo', sql.VarChar(100), correoLogin)
             .execute('sp_ValidarLogin');
 
-        // Si no existe el correo o el usuario esta inactivo.
-        if (result.recordset.length === 0) {
-            return res.status(401).json({ success: false, mensaje: 'Correo o contrasena incorrectos o usuario inactivo' });
+        // No existe el correo o el usuario esta inactivo.
+        if (resultado.recordset.length === 0) {
+            return res.status(401).json({ success: false, mensaje: 'Correo o contraseña incorrectos' });
         }
 
-        const usuario = result.recordset[0];
+        const usuario = resultado.recordset[0];
 
         // Comparamos la contrasena escrita contra la cifrada guardada.
-        const contrasenaCorrecta = await bcrypt.compare(password, usuario.contrausu);
+        const contrasenaCorrecta = await bcrypt.compare(String(password), usuario.contrausu);
         if (!contrasenaCorrecta) {
-            return res.status(401).json({ success: false, mensaje: 'Correo o contrasena incorrectos' });
+            return res.status(401).json({ success: false, mensaje: 'Correo o contraseña incorrectos' });
         }
 
-        // Generamos el token de sesion (dura 8 horas).
+        // Token de sesion (dura 8 horas).
         const token = jwt.sign(
-            {
-                id_usuario: usuario.id_usuario,
-                rol: usuario.rol,
-                numero_control: usuario.numero_control
-            },
+            { id_usuario: usuario.id_usuario, rol: usuario.rol, numero_control: usuario.numero_control },
             process.env.CLAVE_SECRETA,
             { expiresIn: '8h' }
         );
 
+        // Registra el acceso en la bitacora (si falla, el usuario entra de todos modos).
+        try {
+            await pool.request()
+                .input('id_usuario', sql.Int, usuario.id_usuario)
+                .input('accion', sql.VarChar(255), 'Inicio de sesion')
+                .input('detalles', sql.VarChar(sql.MAX), 'Ingresó como ' + usuario.rol)
+                .execute('sp_RegistrarBitacora');
+        } catch (errBitacora) {
+            console.error('No se pudo registrar el acceso en la bitacora:', errBitacora.message);
+        }
+
         res.json({
             success: true,
-            mensaje: 'Inicio de sesion exitoso',
+            mensaje: 'Inicio de sesión exitoso',
             token: token,
             nombre: usuario.nombre_completo,
             rol: usuario.rol,
             numero_control: usuario.numero_control || 'N/A'
         });
     } catch (err) {
-        console.error('Error en el login:', err);
-        res.status(500).json({ success: false, mensaje: 'Error interno en el servidor' });
+        responderErrorSql(res, err, 'Error en el login');
     }
 });
 

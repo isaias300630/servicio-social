@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Jefe de Oficina</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+    <link rel="stylesheet" href="css/jefe.css">
+</head>
+<body>
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol">Jefe de Oficina de Servicio Social</p>
+                <h1 class="encabezado__nombre" id="saludo">Bienvenido</h1>
+                <p class="encabezado__periodo" id="periodoActivo"></p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="cuenta.html" class="boton">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Resumen de programas -->
+        <section class="resumen">
+            <div class="dato"><span class="dato__numero" id="totalProgramas">–</span><span class="dato__texto">Programas</span></div>
+            <div class="dato dato--pendiente"><span class="dato__numero" id="totalPendientes">–</span><span class="dato__texto">Pendientes</span></div>
+            <div class="dato dato--aprobado"><span class="dato__numero" id="totalAprobados">–</span><span class="dato__texto">Aprobados</span></div>
+            <div class="dato dato--rechazado"><span class="dato__numero" id="totalRechazados">–</span><span class="dato__texto">Rechazados</span></div>
+            <div class="dato"><span class="dato__numero" id="totalLugares">–</span><span class="dato__texto">Lugares libres</span></div>
+        </section>
+
+        <!-- Lo que puede hacer el Jefe de Oficina -->
+        <h2 class="seccion">¿Qué quieres hacer?</h2>
+        <section class="funciones">
+            <a class="funcion funcion--principal" href="programas.html#formulario">
+                <span class="funcion__titulo">Subir programa</span>
+                <span class="funcion__texto">Registra un programa nuevo en el banco de servicio social.</span>
+            </a>
+            <a class="funcion" href="programas.html">
+                <span class="funcion__titulo">Banco de programas</span>
+                <span class="funcion__texto">Consulta, busca, edita o borra los programas registrados.</span>
+            </a>
+            <a class="funcion" href="programas.html?estatus=pendiente">
+                <span class="funcion__titulo">Revisar pendientes <span class="globo" id="globoPendientes" hidden></span></span>
+                <span class="funcion__texto">Aprueba o rechaza programas y propuestas de alumnos.</span>
+            </a>
+            <a class="funcion" href="cuenta.html">
+                <span class="funcion__titulo">Mi cuenta</span>
+                <span class="funcion__texto">Cambia tu contraseña de acceso.</span>
+            </a>
+            <div class="funcion funcion--pronto">
+                <span class="funcion__titulo">Validar documentos <span class="etiqueta">Próximamente</span></span>
+                <span class="funcion__texto">Revisa los documentos que suben los alumnos.</span>
+            </div>
+            <div class="funcion funcion--pronto">
+                <span class="funcion__titulo">Generar cartas <span class="etiqueta">Próximamente</span></span>
+                <span class="funcion__texto">Carta de presentación, aceptación y constancia de terminación.</span>
+            </div>
+            <div class="funcion funcion--pronto">
+                <span class="funcion__titulo">Reportes bimestrales <span class="etiqueta">Próximamente</span></span>
+                <span class="funcion__texto">Lista de alumnos que no han entregado su reporte.</span>
+            </div>
+        </section>
+
+        <!-- Ultimos programas pendientes -->
+        <section class="tarjeta">
+            <h2 class="subtitulo">Pendientes de revisar</h2>
+            <ul class="lista-pendientes" id="listaPendientes">
+                <li>Cargando...</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="js/jefe.js"></script>
+</body>
+</html>
