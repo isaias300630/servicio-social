@@ -8,6 +8,8 @@ const rutasAcceso = require('./rutas/rutasAcceso');
 const rutasAdmin = require('./rutas/rutasAdmin');
 const rutasProgramas = require('./rutas/rutasProgramas');
 
+const rutasCuenta = require('./rutas/rutasCuenta');   
+app.use('/api', rutasCuenta);                          
 const app = express();
 app.use(express.json());
 app.use(cors());

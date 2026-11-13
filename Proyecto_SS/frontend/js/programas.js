@@ -155,3 +155,9 @@ function limpiarFormulario() {
     document.getElementById('tituloFormulario').textContent = 'Nuevo programa';
     document.getElementById('botonCancelar').style.display = 'none';
 }
+// Cerrar sesion.
+document.getElementById('cerrarSesion').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.clear();
+    window.location.href = 'index.html';
+});
