@@ -8,7 +8,7 @@ go
 
 -- La contrasena es 'Admin12345' ya cifrada con bcrypt.
 insert into usuarios (correousu, contrausu, id_rol, activo_usu)
-values ('admin@tecnm.mx', '$2b$10$iU8SLIj4/lBNFF05IgKX6OU6RTm.yJ.toB1NBiY3eSWidQfJbwqpC', 4, 1)
+values ('admin@culiacan.tecnm.mx', '$2b$10$iU8SLIj4/lBNFF05IgKX6OU6RTm.yJ.toB1NBiY3eSWidQfJbwqpC', 4, 1)
 go
 
 insert into administradores (id_usuario, nombre_ad, apellido_paterno_ad, nivel_acceso_ad)

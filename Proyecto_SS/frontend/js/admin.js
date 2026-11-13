@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 document.getElementById('adminForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const correoVal = document.getElementById('correo').value.trim().toLowerCase();
+    const passVal = document.getElementById('password').value;
+    const DOMINIOS = ['culiacan.tecnm.mx', 'tecnm.mx'];
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoVal) || !DOMINIOS.includes(correoVal.split('@')[1])) {
+        alert('El correo debe ser institucional.'); return;
+    }
+    if (passVal.length < 10 || passVal.length > 64 || !/[A-Z]/.test(passVal) || !/\d/.test(passVal)) {
+        alert('La contraseña debe tener entre 10 y 64 caracteres, una mayúscula y un número.'); return;
+    }
+    
     const payload = {
         id_rol: document.getElementById('rolSelect').value,
         nombre: document.getElementById('nombre').value,

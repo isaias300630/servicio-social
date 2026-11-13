@@ -4,6 +4,14 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const correo_institucional = document.getElementById('correo_institucional').value;
     const password = document.getElementById('password').value;
 
+    
+    const DOMINIOS = ['culiacan.tecnm.mx'];
+    const correoChk = correo_institucional.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoChk) || !DOMINIOS.includes(correoChk.split('@')[1])) {
+        alert('Usa tu correo institucional.'); return;
+    }
+
+    
     try {
         const response = await fetch('/api/login', {
             method: 'POST',
