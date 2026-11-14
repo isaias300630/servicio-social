@@ -58,6 +58,21 @@ El servidor ya sirve el frontend, así que no necesitas abrir los HTML con doble
 
 Con él entras al login, te manda a `admin.html` y desde ahí das de alta a los jefes.
 
+## Recuperación de contraseña (olvidé mi contraseña)
+
+Requiere correr `sql/04_recuperacion_contrasena.sql` y configurar las variables `SMTP_*` del `.env`
+(ver `.env.example`). Sin SMTP y con `NODE_ENV` distinto de `production`, el código se imprime en la consola del servidor.
+
+| Paso | Método y ruta | Cuerpo (JSON) |
+|---|---|---|
+| 1. Pedir código | `POST /api/recuperar-contrasena/solicitar` | `{ "correo": "..." }` |
+| 2. Validar código (opcional) | `POST /api/recuperar-contrasena/verificar` | `{ "correo": "...", "codigo": "123456" }` |
+| 3. Cambiar contraseña | `POST /api/recuperar-contrasena/restablecer` | `{ "correo": "...", "codigo": "123456", "nueva": "...", "confirmacion": "..." }` |
+
+Reglas: código de 6 dígitos, vence en 15 min, un solo uso, 5 intentos máximo, 1 solicitud por minuto y 5 por hora.
+El código se guarda como hash (HMAC-SHA256), la respuesta al solicitar es igual exista o no el correo, y al
+restablecer se desbloquea la cuenta. Todo queda en la bitácora.
+
 ## Pendientes (lo que falta por hacer)
 - `registro.html` y `dashboard_jefe.html` (el login ya redirige a ellos).
 - Subida de archivos PDF con `multer` hacia la carpeta `uploads/` o Azure Blob Storage.
