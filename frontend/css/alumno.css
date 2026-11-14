@@ -1,0 +1,175 @@
+/* Estilos del panel del alumno */
+
+/* Pasos del tramite */
+.avance {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+}
+
+.avance__paso {
+    background-color: #1a1a1a;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    color: #aaa;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.avance__numero {
+    width: 3.4rem;
+    height: 3.4rem;
+    flex: none;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background-color: #333;
+    color: #ddd;
+}
+
+.avance__paso--listo {
+    color: #fff;
+}
+
+.avance__paso--listo .avance__numero {
+    background-color: #2ecc71;
+    color: #000;
+}
+
+/* Programa */
+.nota {
+    color: #1a1a1a;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.programas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+    gap: 1.5rem;
+}
+
+.programa {
+    background-color: #1a1a1a;
+    color: #ccc;
+    border-radius: 1rem;
+    padding: 2rem;
+    font-size: 1.4rem;
+    display: grid;
+    gap: 0.6rem;
+}
+
+.programa__nombre {
+    font-size: 1.8rem;
+}
+
+.programa .programa__nombre {
+    color: #fff;
+}
+
+#contenidoPrograma > p {
+    font-size: 1.5rem;
+    color: #1a1a1a;
+    margin-top: 0.5rem;
+}
+
+.lugares {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+/* Documentos */
+.cabecera-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.regla-pdf {
+    font-size: 1.3rem;
+    font-weight: bold;
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 0.4rem 1.2rem;
+    border-radius: 1rem;
+}
+
+.documentos {
+    list-style: none;
+    padding: 0;
+}
+
+.documento {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #777;
+}
+
+.documento:last-child {
+    border-bottom: none;
+}
+
+.documento__nombre {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+.documento__detalle {
+    font-size: 1.3rem;
+    color: #333;
+    margin-top: 0.3rem;
+    word-break: break-all;
+}
+
+.documento__comentario {
+    margin-top: 0.6rem;
+    font-size: 1.4rem;
+    background-color: #fdecea;
+    color: #8b1a10;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.4rem;
+}
+
+.documento__acciones {
+    display: flex;
+    gap: 0.6rem;
+    flex: none;
+}
+
+.boton-oscuro {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.documento .estatus {
+    text-transform: none;
+    margin-left: 0.6rem;
+}
+
+.estatus-aceptado { background-color: #2ecc71; color: #000; }
+.estatus-vacio    { background-color: #ddd; color: #333; }
+
+.campo--boton {
+    display: flex;
+    align-items: flex-end;
+}
+
+/* En celular los botones van abajo del documento */
+@media (max-width: 600px) {
+    .documento {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
