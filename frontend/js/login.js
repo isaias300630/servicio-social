@@ -29,7 +29,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
             // Cada rol va a su pantalla.
             if (data.rol === 'Alumno') {
-                window.location.href = 'cuenta.html';
+                window.location.href = 'alumno.html';
             } else if (data.rol === 'Administrador') {
                 window.location.href = 'admin.html';
             } else if (data.rol === 'Jefe de Oficina de SS') {
