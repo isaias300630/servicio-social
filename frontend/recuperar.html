@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <title>Recuperar Contraseña</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<main class="login">
+    <section class="login__content">
+        <h1 class="login__title">Recuperar Contraseña</h1>
+
+        <!-- Paso 1: Solicitar codigo por correo -->
+        <form class="form-register" id="formSolicitar">
+            <div class="form__field">
+                <label class="form__label" for="correo">Correo Institucional:</label>
+                <input class="form__input" type="email" id="correo" placeholder="usuario@culiacan.tecnm.mx" required>
+            </div>
+            <button class="form__button" type="submit" id="btnSolicitar">Enviar código</button>
+        </form>
+
+        <!-- Paso 2: Verificar codigo de 6 digitos -->
+        <form class="form-register" id="formVerificar" hidden>
+            <div class="form__field">
+                <label class="form__label" for="codigo">Código de 6 dígitos:</label>
+                <input class="form__input" type="text" id="codigo" placeholder="000000" maxlength="6" inputmode="numeric" pattern="\d{6}" required>
+            </div>
+            <button class="form__button" type="submit" id="btnVerificar">Verificar código</button>
+        </form>
+
+        <!-- Paso 3: Capturar nueva contrasena -->
+        <form class="form-register" id="formRestablecer" hidden>
+            <div class="form__field">
+                <label class="form__label" for="nueva">Nueva contraseña:</label>
+                <input class="form__input" type="password" id="nueva" placeholder="Mín. 10 caracteres, 1 mayúscula y 1 número" maxlength="64" required>
+            </div>
+            <div class="form__field">
+                <label class="form__label" for="confirmacion">Confirmar nueva contraseña:</label>
+                <input class="form__input" type="password" id="confirmacion" placeholder="Repite la nueva contraseña" maxlength="64" required>
+            </div>
+            <button class="form__button" type="submit" id="btnRestablecer">Guardar nueva contraseña</button>
+        </form>
+
+        <nav class="login__nav">
+            <a class="login__link" href="#" id="reenviarCodigo" hidden>¿No te llegó? Enviar otro código</a>
+            <a class="login__link" href="index.html">Volver a iniciar sesión</a>
+        </nav>
+    </section>
+</main>
+
+<script src="js/recuperar.js"></script>
+</body>
+</html>
