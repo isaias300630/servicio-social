@@ -18,6 +18,7 @@ app.use(cors());
 // Sirve el frontend (HTML, CSS, JS) desde la carpeta /frontend
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
+
 // Rutas de la API
 app.use('/api', rutasAcceso);
 app.use('/api/admin', rutasAdmin);
