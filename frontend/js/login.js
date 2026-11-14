@@ -59,5 +59,8 @@ document.getElementById('enlaceAyuda').addEventListener('click', (e) => {
 
 document.getElementById('enlaceOlvido').addEventListener('click', (e) => {
     e.preventDefault();
-    alert('Pide a la Oficina de Servicio Social que restablezca tu contraseña.');
+    const correo = document.getElementById('correo_institucional').value.trim().toLowerCase();
+    window.location.href = correo
+        ? `recuperar.html?correo=${encodeURIComponent(correo)}`
+        : 'recuperar.html';
 });
