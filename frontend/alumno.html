@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Servicio Social</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/alumno.css">
+</head>
+<body>
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol" id="numeroControl">Alumno</p>
+                <h1 class="encabezado__nombre" id="saludo">Hola</h1>
+                <p class="encabezado__periodo" id="datosEscolares"></p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="cuenta.html" class="boton">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Avance del tramite -->
+        <ol class="avance" id="avance"></ol>
+
+        <!-- Programa del alumno o lista para elegir uno -->
+        <section class="tarjeta" id="seccionPrograma">
+            <h2 class="subtitulo">Mi programa</h2>
+            <div id="contenidoPrograma"><p>Cargando...</p></div>
+        </section>
+
+        <!-- Documentos PDF -->
+        <section class="tarjeta" id="seccionDocumentos">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Mis documentos</h2>
+                <span class="regla-pdf">Solo PDF · máximo 5 MB</span>
+            </div>
+            <p class="nota" id="notaDocumentos" hidden></p>
+            <ul class="documentos" id="listaDocumentos"></ul>
+            <input type="file" id="archivo" accept=".pdf" hidden>
+        </section>
+
+        <!-- Datos de contacto -->
+        <section class="tarjeta">
+            <h2 class="subtitulo">Mis datos de contacto</h2>
+            <form id="formDatos" class="rejilla">
+                <div class="campo">
+                    <label for="telefono">Teléfono (10 dígitos)</label>
+                    <input type="tel" id="telefono" inputmode="numeric" maxlength="10" pattern="\d{10}" required>
+                </div>
+                <div class="campo">
+                    <label for="domicilio">Domicilio (calle y número)</label>
+                    <input type="text" id="domicilio" maxlength="255" required>
+                </div>
+                <div class="campo">
+                    <label for="direccion">Colonia, ciudad y C.P.</label>
+                    <input type="text" id="direccion" maxlength="255" required>
+                </div>
+                <div class="campo campo--boton">
+                    <button type="submit" class="boton">Guardar datos</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="js/alumno.js"></script>
+</body>
+</html>
