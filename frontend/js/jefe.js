@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const periodos = await resPeriodos.json();
 
         mostrarResumen(programas);
+        contarDocumentos();
         mostrarPendientes(programas);
 
         const activo = Array.isArray(periodos) && periodos.find(p => p.estatus_activo_pe);
@@ -93,3 +94,15 @@ document.getElementById('cerrarSesion').addEventListener('click', (e) => {
     localStorage.clear();
     window.location.href = 'index.html';
 });
+
+// Cuantos documentos de alumnos esperan revision 
+async function contarDocumentos() {
+    const respuesta = await fetch('/api/validacion/pendientes', { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!respuesta.ok) return;
+    const documentos = await respuesta.json();
+    const globo = document.getElementById('globoDocumentos');
+    if (documentos.length > 0) {
+        globo.textContent = documentos.length;
+        globo.hidden = false;
+    }
+}

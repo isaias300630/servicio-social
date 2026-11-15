@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validar documentos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/alumno.css">
+</head>
+<body>
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol" id="rol">Validación</p>
+                <h1 class="encabezado__nombre">Validar documentos</h1>
+                <p class="encabezado__periodo" id="totalPendientes"></p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="jefe.html" class="boton" id="volverPanel">Volver al panel</a>
+                <a href="cuenta.html" class="boton">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Documentos en revision -->
+        <section class="tarjeta">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Documentos en revisión</h2>
+                <input type="search" id="buscar" class="buscar-alumno" placeholder="Buscar por alumno o número de control">
+            </div>
+            <ul class="documentos" id="listaPendientes">
+                <li>Cargando...</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="js/validar.js"></script>
+</body>
+</html>
