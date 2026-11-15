@@ -93,10 +93,11 @@ begin
 
             set @nuevo_id = scope_identity();
 
+            -- El formulario se llena al terminar el curso, asi que la induccion queda completa (el 1 del final).
             insert into estudiantes (numero_control, id_usuario, nombrees, apellido_paterno_es,
-                                     apellido_materno_es, carrera, semestre, plan_estudios)
+                                     apellido_materno_es, carrera, semestre, plan_estudios, induccion_completa)
             values (@numero_control, @nuevo_id, @nombre, @paterno,
-                    @materno, @carrera, @semestre, @plan_estudios);
+                    @materno, @carrera, @semestre, @plan_estudios, 1);
 
             insert into bitacora_logs (id_usuario, accion, detalles)
             values (@nuevo_id, 'Alta de alumno', 'Alumno registrado desde el formulario: ' + @numero_control);

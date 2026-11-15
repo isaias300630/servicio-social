@@ -12,6 +12,10 @@ const router = express.Router();
 const subida = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }).single('archivo');
 const MENSAJE_PDF = 'Solo se permiten archivos en formato PDF con un peso máximo de 5 MB';
 
+// Maximo 5 subidas a la vez (5 x 5 MB) para no llenar la memoria del servidor.
+const MAXIMO_SUBIDAS = 5;
+let subidasEnCurso = 0;
+
 // Todas las rutas /api/alumno piden sesion de Alumno.
 router.use('/alumno', verificarSesion, (req, res, next) => {
     if (req.usuario.rol !== 'Alumno') {
@@ -99,6 +103,13 @@ router.post('/alumno/solicitud', async (req, res) => {
 
 // Sube un PDF. Llega como formulario con los campos "tipo" y "archivo".
 router.post('/alumno/documentos', (req, res) => {
+    // Si ya hay muchas subidas al mismo tiempo, se le pide esperar.
+    if (subidasEnCurso >= MAXIMO_SUBIDAS) {
+        return res.status(503).json({ success: false, mensaje: 'Hay muchas subidas en este momento, intenta de nuevo en unos segundos' });
+    }
+    subidasEnCurso++;
+    res.on('close', () => subidasEnCurso--);
+
     subida(req, res, async (errSubida) => {
         const archivo = req.file;
 

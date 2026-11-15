@@ -7,7 +7,8 @@ if col_length('documentos', 'contenido_pdf') is null
     alter table documentos add contenido_pdf varbinary(max) null;
 go
 
--- Fechas de los 3 reportes bimestrales: cada uno se recibe durante su bimestre y 7 dias despues.
+-- Fechas de los 3 reportes bimestrales: cada uno se recibe durante su bimestre y 7 dias despues
+-- (esos 7 dias se enciman a proposito con el inicio del siguiente bimestre).
 insert into calendario_reportes (id_periodo, numero_bimestre, fecha_inicio_cr, fecha_limite_cr)
 select p.id_periodo, b.numero,
        dateadd(month, 2 * (b.numero - 1), p.fecha_inicio_pe),
@@ -17,8 +18,9 @@ cross join (values (1), (2), (3)) as b(numero)
 where not exists (select 1 from calendario_reportes c where c.id_periodo = p.id_periodo);
 go
 
--- Los alumnos que llenaron el formulario del curso ya tienen la induccion completa.
-update estudiantes set induccion_completa = 1 where isnull(induccion_completa, 0) = 0;
+-- Un alumno solo puede tener un servicio activo (lo cuida la base aunque lleguen dos clics al mismo tiempo).
+if not exists (select 1 from sys.indexes where name = 'ux_expediente_activo')
+    create unique index ux_expediente_activo on expedientes (numero_control) where estatus_ex = 'activo';
 go
 
 
@@ -32,6 +34,9 @@ begin
     declare @numero_control varchar(20) = (select numero_control from estudiantes where id_usuario = @id_usuario);
     if @numero_control is null
         throw 50404, N'Alumno no encontrado', 1;
+
+    -- Azure trabaja en hora UTC; Culiacan es UTC-7 todo el año (Sinaloa no tiene horario de verano).
+    declare @hoy date = cast(dateadd(hour, -7, getutcdate()) as date);
 
     declare @id_expediente int = (select top 1 id_expediente from expedientes
                                   where numero_control = @numero_control and estatus_ex = 'activo');
@@ -60,7 +65,7 @@ begin
 
     -- 4. Fechas de los reportes del periodo activo
     select c.numero_bimestre, c.fecha_inicio_cr as inicio, c.fecha_limite_cr as limite,
-           case when cast(getdate() as date) between c.fecha_inicio_cr and c.fecha_limite_cr then 1 else 0 end as abierto
+           case when @hoy between c.fecha_inicio_cr and c.fecha_limite_cr then 1 else 0 end as abierto
     from calendario_reportes c
     inner join periodos_escolares pe on c.id_periodo = pe.id_periodo
     where pe.estatus_activo_pe = 1;
@@ -144,7 +149,7 @@ begin
                 throw 50409, N'El programa ya no tiene lugares disponibles', 1;
 
             insert into expedientes (numero_control, id_programa, id_periodo, fechainicio_ex, estatus_ex)
-            values (@numero_control, @id_programa, @id_periodo, getdate(), 'activo');
+            values (@numero_control, @id_programa, @id_periodo, dateadd(hour, -7, getutcdate()), 'activo');
 
             insert into bitacora_logs (id_usuario, accion, detalles)
             values (@id_usuario, 'Solicitud de programa', 'Programa #' + cast(@id_programa as varchar(10)));
@@ -152,6 +157,8 @@ begin
     end try
     begin catch
         if @@trancount > 0 rollback tran;
+        if error_number() in (2601, 2627)
+            throw 50409, N'Ya cuentas con un servicio social activo', 1;
         throw;
     end catch
 end
@@ -200,7 +207,7 @@ begin
        and not exists (select 1 from calendario_reportes
                        where id_periodo = @id_periodo
                          and numero_bimestre = cast(right(@tipo, 1) as int)
-                         and cast(getdate() as date) between fecha_inicio_cr and fecha_limite_cr)
+                         and cast(dateadd(hour, -7, getutcdate()) as date) between fecha_inicio_cr and fecha_limite_cr)
     begin
         insert into bitacora_logs (id_usuario, accion, detalles)
         values (@id_usuario, 'Reporte fuera de fecha', @tipo);
