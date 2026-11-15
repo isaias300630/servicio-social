@@ -3,7 +3,8 @@ const api = '/api/programas';
 // Solo entra el Jefe de Oficina con sesion iniciada.
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-if (!token || usuario.rol !== 'Jefe de Oficina de SS') window.location.href = 'index.html';
+const ROLES_JEFES = ['Jefe de Oficina de SS', 'Jefe de Vinculacion'];
+if (!token || !ROLES_JEFES.includes(usuario.rol)) window.location.href = 'index.html';
 
 
 let programas = [];
