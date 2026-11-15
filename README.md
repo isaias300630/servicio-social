@@ -73,6 +73,19 @@ Reglas: código de 6 dígitos, vence en 15 min, un solo uso, 5 intentos máximo,
 El código se guarda como hash (HMAC-SHA256), la respuesta al solicitar es igual exista o no el correo, y al
 restablecer se desbloquea la cuenta. Todo queda en la bitácora.
 
+## Reporte de alumnos sin reporte bimestral (CU12)
+
+Requiere correr `sql/06_reporte_bimestral.sql` (después de 01 a 05). Solo lo puede usar el Jefe de Oficina de SS.
+Pantalla: `reporte-bimestral.html` (botón **Reportes bimestrales** del panel del jefe), con botón para imprimir o guardar como PDF.
+
+| Método y ruta | Parámetros (URL) |
+|---|---|
+| `GET /api/reportes/carreras` | — |
+| `GET /api/reportes/sin-reporte-bimestral` | `bimestre` (1 a 3, obligatorio), `periodo` (id, opcional; sin él usa el activo), `carrera` (opcional) |
+
+Un reporte cuenta como **entregado** solo si su versión más reciente está `pendiente` o `aceptado`.
+Sin documento, o con el último `rechazado`, el alumno aparece en la lista.
+
 ## Pendientes (lo que falta por hacer)
 - `registro.html` y `dashboard_jefe.html` (el login ya redirige a ellos).
 - Subida de archivos PDF con `multer` hacia la carpeta `uploads/` o Azure Blob Storage.

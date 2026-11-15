@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Candado extra: deja pasar solo si el usuario es Jefe de Oficina de SS.
 function soloJefeOficina(req, res, next) {
-    if (req.usuario.rol !== 'Jefe de Oficina de SS') {
+    if (req.usuario.rol !== 'Jefe de Oficina de SS' && req.usuario.rol !== 'Jefe de Vinculacion') {
         return res.status(403).json({ success: false, mensaje: 'Solo el Jefe de Oficina de SS puede hacer esto' });
     }
     next();

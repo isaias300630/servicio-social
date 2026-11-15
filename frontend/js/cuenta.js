@@ -4,7 +4,7 @@ const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 if (!token) window.location.href = 'index.html';
 
 
-const paneles = { 'Administrador': 'admin.html', 'Jefe de Oficina de SS': 'jefe.html' };
+const paneles = { 'Administrador': 'admin.html', 'Jefe de Oficina de SS': 'jefe.html', 'Jefe de Vinculacion': 'jefe.html', 'Alumno': 'alumno.html' };
 const enlaceVolver = document.getElementById('volverPanel');
 if (paneles[usuario.rol]) {
     enlaceVolver.href = paneles[usuario.rol];

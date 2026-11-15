@@ -1,0 +1,96 @@
+/* Pantalla del reporte de alumnos sin reporte bimestral */
+
+.resumen--chico {
+    margin-bottom: 2rem;
+}
+
+.resumen--chico .dato {
+    padding: 1.4rem;
+}
+
+.reporte__titulo p {
+    color: #1a1a1a;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.reporte__pie {
+    color: #333;
+    font-size: 1.3rem;
+    margin-top: 2rem;
+}
+
+.aviso {
+    color: #1a1a1a;
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding: 2rem 0;
+}
+
+.estatus-sin-entrega { background-color: #e74c3c; color: #fff; }
+
+/* Al imprimir: hoja blanca, texto negro, sin filtros ni botones */
+@media print {
+    @page {
+        margin: 1.5cm;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .sin-imprimir {
+        display: none !important;
+    }
+
+    .pagina {
+        max-width: none;
+        padding: 0;
+    }
+
+    .tarjeta {
+        background: #fff;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .subtitulo,
+    .reporte__titulo p,
+    .reporte__pie,
+    .dato__numero,
+    .dato__texto {
+        color: #000;
+    }
+
+    .dato {
+        background: #fff;
+        border: 1px solid #000;
+    }
+
+    .tabla th,
+    .tabla td {
+        color: #000;
+        border-bottom: 1px solid #000;
+        font-size: 1.1rem;
+        padding: 0.6rem;
+    }
+
+    .tabla-contenedor {
+        overflow: visible;
+    }
+
+    /* Que una fila no se parta entre dos hojas y el encabezado se repita */
+    .tabla tr {
+        page-break-inside: avoid;
+    }
+
+    .tabla thead {
+        display: table-header-group;
+    }
+
+    .estatus {
+        background: none !important;
+        color: #000 !important;
+        border: 1px solid #000;
+    }
+}
