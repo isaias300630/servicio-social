@@ -1,4 +1,5 @@
 -- Validacion de documentos (CU11): el Jefe de Oficina o el Jefe de Vinculacion aceptan o rechazan los PDF de los alumnos.
+-- Correr despues de 06. Se puede volver a correr completo.
 
 
 

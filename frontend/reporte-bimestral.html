@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumnos sin reporte bimestral</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/reporte-bimestral.css">
+</head>
+<body>
+    <main class="pagina">
+        <header class="encabezado sin-imprimir">
+            <div>
+                <p class="encabezado__rol" id="etiquetaRol">Servicio Social</p>
+                <h1 class="encabezado__nombre">Alumnos sin reporte bimestral</h1>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="jefe.html" class="boton" id="volverPanel">Volver al panel</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Filtros -->
+        <section class="tarjeta sin-imprimir">
+            <form id="formFiltros">
+                <div class="rejilla">
+                    <div class="campo">
+                        <label for="periodo">Periodo escolar</label>
+                        <select id="periodo" required></select>
+                    </div>
+                    <div class="campo">
+                        <label for="bimestre">Bimestre</label>
+                        <select id="bimestre" required>
+                            <option value="">Selecciona...</option>
+                            <option value="1">Bimestre 1</option>
+                            <option value="2">Bimestre 2</option>
+                            <option value="3">Bimestre 3</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="carrera">Carrera (opcional)</label>
+                        <select id="carrera">
+                            <option value="">Todas las carreras</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="boton" type="submit" id="btnGenerar">Generar reporte</button>
+            </form>
+        </section>
+
+        <!-- Resultado -->
+        <section class="tarjeta" id="resultado" hidden>
+            <div class="reporte__titulo">
+                <h2 class="subtitulo">Alumnos sin reporte bimestral</h2>
+                <p id="datosReporte"></p>
+            </div>
+
+            <div class="resumen resumen--chico" id="totales"></div>
+
+            <p class="aviso" id="mensajeVacio" hidden></p>
+
+            <div class="tabla-contenedor" id="contenedorTabla">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>No. control</th>
+                            <th>Alumno</th>
+                            <th>Carrera</th>
+                            <th>Sem.</th>
+                            <th>Programa</th>
+                            <th>Estatus del reporte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla"></tbody>
+                </table>
+            </div>
+
+            <p class="reporte__pie" id="pieReporte"></p>
+
+            <div class="barra sin-imprimir" id="barraImprimir">
+                <button class="boton" type="button" id="btnImprimir">Imprimir / guardar como PDF</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/reporte-bimestral.js"></script>
+</body>
+</html>

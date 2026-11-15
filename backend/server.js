@@ -11,6 +11,7 @@ const rutasCuenta = require('./rutas/rutasCuenta');
 const rutasRecuperacion = require('./rutas/rutasRecuperacion');
 const rutasAlumno = require('./rutas/rutasAlumno');
 const rutasValidacion = require('./rutas/rutasValidacion');
+const rutasReportes = require('./rutas/rutasReportes');
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
@@ -28,6 +29,7 @@ app.use('/api', rutasCuenta);
 app.use('/api', rutasRecuperacion);
 app.use('/api', rutasAlumno);
 app.use('/api', rutasValidacion);
+app.use('/api', rutasReportes);
 
 // Si piden una ruta de la API que no existe.
 app.use('/api', (req, res) => {
