@@ -1,6 +1,6 @@
 /* ==========================================================================
    SISTEMA DE GESTIÓN DE SERVICIO SOCIAL - TECNM CAMPUS CULIACÁN
-   Identidad Visual Oficial: TecNM / SEP / Gobierno de México
+   Identidad Visual Institucional: TecNM
    ========================================================================== */
 
 :root {
@@ -10,9 +10,7 @@
     --tecnm-azul-claro: #2C5282;
     --tecnm-azul-suave: #EBF1F8;
 
-    /* Colores Institucionales Gobierno / SEP */
-    --gob-guinda: #611232;
-    --gob-guinda-oscuro: #4A0D26;
+    /* Detalles Institucionales */
     --gob-dorado: #B38E5D;
     --gob-dorado-claro: #D4C19C;
 
@@ -75,36 +73,12 @@ a {
 }
 
 /* ==========================================================================
-   ENCABEZADO OFICIAL GOBIERNO / SEP / TECNM
+   ENCABEZADO INSTITUCIONAL BLANCO LIMPIO
    ========================================================================== */
-.header-gob {
-    background-color: var(--gob-guinda);
-    color: #FFFFFF;
-    padding: 0.7rem 2.4rem;
-    font-size: 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid var(--gob-dorado);
-}
-
-.header-gob__marca {
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.header-gob__texto {
-    opacity: 0.92;
-    font-size: 1.2rem;
-}
-
 .header-institucional {
     background-color: var(--bg-blanco);
     border-bottom: 1px solid var(--borde-suave);
-    padding: 1.4rem 2.4rem;
+    padding: 1.6rem 2.4rem;
 }
 
 .header-institucional__contenedor {
@@ -170,22 +144,6 @@ a {
     font-weight: 600;
 }
 
-.navbar-tecnm {
-    background-color: var(--tecnm-azul);
-    color: #FFFFFF;
-    padding: 0.9rem 2.4rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
-.navbar-tecnm__contenedor {
-    max-width: 120rem;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.35rem;
-}
-
 /* ==========================================================================
    PANTALLA DE INICIO DE SESIÓN (LOGIN)
    ========================================================================== */
@@ -220,8 +178,8 @@ a {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: var(--gob-guinda);
-    background-color: #FDF2F5;
+    color: var(--tecnm-azul);
+    background-color: var(--tecnm-azul-suave);
     padding: 0.4rem 1.2rem;
     border-radius: 2rem;
     margin-bottom: 1rem;
@@ -392,12 +350,6 @@ a {
 }
 
 @media (max-width: 600px) {
-    .header-gob {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.3rem;
-    }
-
     .login__content {
         padding: 2.6rem 2rem;
     }
