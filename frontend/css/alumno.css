@@ -1,190 +1,446 @@
-/* Estilos del panel del alumno */
+/* ==========================================================================
+   PANEL DEL ALUMNO - IDENTIDAD INSTITUCIONAL TECNM
+   ========================================================================== */
 
-/* Pasos del tramite */
-.avance {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 3rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: 1rem;
+.pagina {
+    flex: 1;
+    width: 100%;
+    max-width: 114rem;
+    margin: 0 auto;
+    padding: 3.2rem 2rem 5rem;
 }
 
-.avance__paso {
-    background-color: #FFF;
-    border-radius: 1rem;
-    padding: 1.5rem;
+/* ==========================================================================
+   ENCABEZADO DEL PANEL (BIENVENIDA Y ACCIONES)
+   ========================================================================== */
+.encabezado {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 2.4rem 2.8rem;
+    margin-bottom: 2.4rem;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+    border-left: 5px solid var(--tecnm-azul);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.encabezado__rol {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--tecnm-azul);
+    background-color: var(--tecnm-azul-suave);
+    padding: 0.35rem 1.1rem;
+    border-radius: 2rem;
+    margin-bottom: 0.8rem;
+}
+
+.encabezado__nombre {
+    font-size: 2.4rem;
+    color: var(--tecnm-azul);
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
+}
+
+.encabezado__periodo {
+    font-size: 1.4rem;
+    color: var(--texto-secundario);
+    font-weight: 500;
+}
+
+.barra {
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    color: #000000;
-    font-size: 1.5rem;
-    font-weight: bold;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   BOTONES INSTITUCIONALES
+   ========================================================================== */
+.boton,
+.boton-chico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    border: 1.5px solid var(--tecnm-azul);
+    border-radius: 0.6rem;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.boton {
+    padding: 1.05rem 1.8rem;
+    font-size: 1.4rem;
+}
+
+.boton-chico {
+    padding: 0.8rem 1.4rem;
+    font-size: 1.35rem;
+}
+
+.boton:hover,
+.boton-chico:hover {
+    background-color: var(--tecnm-azul-oscuro);
+    border-color: var(--tecnm-azul-oscuro);
+    transform: translateY(-1px);
+}
+
+.boton-outline,
+.boton-oscuro {
+    background-color: #FFFFFF;
+    color: var(--tecnm-azul);
+    border: 1.5px solid var(--tecnm-azul);
+}
+
+.boton-outline:hover,
+.boton-oscuro:hover {
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul-oscuro);
+}
+
+.boton-gris {
+    background-color: #F1F5F9;
+    color: var(--texto-principal);
+    border: 1.5px solid #CBD5E1;
+}
+
+.boton-gris:hover {
+    background-color: #E2E8F0;
+    border-color: #94A3B8;
+    color: #0F172A;
+}
+
+/* ==========================================================================
+   PASOS DEL TRÁMITE (STEPPER DE AVANCE)
+   ========================================================================== */
+.avance {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.8rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
+    gap: 1.4rem;
+}
+
+.avance__paso {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 1.6rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+    border: 1px solid var(--borde-suave);
+    box-shadow: 0 2px 8px rgba(27, 57, 106, 0.05);
+    transition: transform 0.2s ease;
 }
 
 .avance__numero {
-    width: 3.4rem;
-    height: 3.4rem;
+    width: 3.6rem;
+    height: 3.6rem;
     flex: none;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background-color: #fff;
-    color: #000000;
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul);
+    font-weight: 700;
+    font-size: 1.5rem;
+    border: 1.5px solid #CBD5E1;
 }
+
 .avance__texto {
-    color: #000000;
+    color: var(--texto-principal);
+    font-size: 1.45rem;
+    font-weight: 600;
 }
 
 .avance__paso--listo {
-    color: #0000;
+    border-color: #A7F3D0;
+    background-color: #F0FDF4;
 }
 
 .avance__paso--listo .avance__numero {
-    background-color: #2ecc71;
-    color: #000;
+    background-color: var(--exito);
+    color: #FFFFFF;
+    border-color: var(--exito);
 }
 
-/* Programa */
+.avance__paso--listo .avance__texto {
+    color: #065F46;
+}
+
+/* ==========================================================================
+   TARJETAS DE CONTENIDO
+   ========================================================================== */
+.tarjeta {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 2.6rem 3rem;
+    margin-bottom: 2.4rem;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+}
+
+.cabecera-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1.4rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 2px solid var(--tecnm-azul-suave);
+}
+
+.subtitulo {
+    font-size: 1.9rem;
+    color: var(--tecnm-azul);
+    margin: 0;
+}
+
+/* ==========================================================================
+   MI PROGRAMA / CATÁLOGO DE PROGRAMAS
+   ========================================================================== */
 .nota {
-    color: #000000;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul);
+    border-left: 4px solid var(--tecnm-azul);
+    padding: 1.2rem 1.6rem;
+    border-radius: 0.4rem;
+    font-size: 1.45rem;
+    font-weight: 500;
+    margin-bottom: 1.8rem;
 }
 
 .programas {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr));
+    gap: 1.8rem;
 }
 
 .programa {
-    background-color: #FFF;
-    color: #ccc;
-    border-radius: 1rem;
+    background-color: #FFFFFF;
+    color: var(--texto-principal);
+    border-radius: var(--radio-borde);
+    border: 1.5px solid var(--borde-suave);
+    border-top: 4px solid var(--tecnm-azul);
     padding: 2rem;
     font-size: 1.4rem;
-    display: grid;
-    gap: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    box-shadow: 0 2px 10px rgba(27, 57, 106, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.programa:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
 }
 
 .programa__nombre {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
+    color: var(--tecnm-azul);
+    font-weight: 700;
+    margin-bottom: 0.2rem;
 }
 
-.programa .programa__nombre {
-    color: #000000;
+.programa p {
+    color: var(--texto-secundario);
+    margin: 0;
 }
 
 #contenidoPrograma > p {
     font-size: 1.5rem;
-    color: #000000;
-    margin-top: 0.5rem;
+    color: var(--texto-principal);
+    margin-top: 0.6rem;
 }
 
 .lugares {
-    color: #2ecc71;
-    font-weight: bold;
-}
-
-/* Documentos */
-.cabecera-seccion {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.regla-pdf {
+    display: inline-block;
+    align-self: flex-start;
+    background-color: var(--exito-bg);
+    color: var(--exito) !important;
+    font-weight: 700;
     font-size: 1.3rem;
-    font-weight: bold;
-    background-color: #FFF;
-    color: #000000;
-    padding: 0.4rem 1.2rem;
-    border-radius: 1rem;
+    padding: 0.3rem 1rem;
+    border-radius: 2rem;
+    margin: 0.4rem 0 !important;
+}
+
+.programa .boton-chico {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* ==========================================================================
+   DOCUMENTOS PDF Y ESTATUS
+   ========================================================================== */
+.regla-pdf {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    border: 1px solid #CBD5E1;
 }
 
 .documentos {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .documento {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid #777;
+    gap: 1.6rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--borde-suave);
 }
 
 .documento:last-child {
     border-bottom: none;
+    padding-bottom: 0;
+}
+
+.documento:first-child {
+    padding-top: 0.4rem;
 }
 
 .documento__nombre {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #000000;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
 }
 
 .documento__detalle {
-    font-size: 1.3rem;
-    color: #333;
-    margin-top: 0.3rem;
-    word-break: break-all;
+    font-size: 1.35rem;
+    color: var(--texto-secundario);
+    margin-top: 0.4rem;
+    word-break: break-word;
 }
 
 .documento__comentario {
-    margin-top: 0.6rem;
-    font-size: 1.4rem;
-    background-color: #fdecea;
-    color: #8b1a10;
+    margin-top: 0.8rem;
+    font-size: 1.35rem;
+    background-color: var(--peligro-bg);
+    color: var(--peligro);
+    border-left: 4px solid var(--peligro);
     padding: 0.8rem 1.2rem;
     border-radius: 0.4rem;
+    font-weight: 500;
 }
 
 .documento__acciones {
     display: flex;
-    gap: 0.6rem;
+    gap: 0.8rem;
     flex: none;
 }
 
-.boton-oscuro {
-    background-color: #FFF;
-    color: #000;
+/* Badges de Estatus */
+.estatus {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 0.3rem 1rem;
+    border-radius: 2rem;
+    letter-spacing: 0.2px;
 }
 
-.documento .estatus {
-    text-transform: none;
-    margin-left: 0.6rem;
+.estatus-aceptado  { background-color: var(--exito-bg); color: var(--exito); }
+.estatus-pendiente { background-color: var(--advertencia-bg); color: var(--advertencia); }
+.estatus-rechazado { background-color: var(--peligro-bg); color: var(--peligro); }
+.estatus-vacio     { background-color: #E2E8F0; color: #475569; }
+
+/* ==========================================================================
+   FORMULARIO DE DATOS DE CONTACTO
+   ========================================================================== */
+.rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: 1.8rem;
 }
 
-.estatus-aceptado { background-color: #2ecc71; color: #000; }
-.estatus-vacio    { background-color: #ddd; color: #333; }
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    margin-bottom: 0.6rem;
+}
+
+.campo input {
+    width: 100%;
+    padding: 1.1rem 1.3rem;
+    border-radius: 0.6rem;
+    font-size: 1.45rem;
+    font-family: inherit;
+    background-color: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    color: var(--texto-principal);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo input:focus {
+    border-color: var(--tecnm-azul);
+    box-shadow: 0 0 0 3px rgba(27, 57, 106, 0.15);
+}
 
 .campo--boton {
-    display: flex;
-    align-items: flex-end;
+    justify-content: flex-end;
 }
 
-/* En celular los botones van abajo del documento */
-@media (max-width: 600px) {
+.campo--boton .boton {
+    width: 100%;
+}
+
+/* ==========================================================================
+   RESPONSIVE MÓVIL
+   ========================================================================== */
+@media (max-width: 650px) {
+    .encabezado {
+        padding: 2rem;
+    }
+
+    .tarjeta {
+        padding: 2rem;
+    }
+
     .documento {
         flex-direction: column;
         align-items: stretch;
     }
-}
 
-/* Buscador de la pantalla de validar documentos */
-.buscar-alumno {
-    width: min(34rem, 100%);
-    padding: 1rem 1.2rem;
-    border-radius: 0.5rem;
-    border: 1px solid #333;
-    background-color: #FFF;
-    color: #000;
-    font-size: 1.4rem;
-    font-family: inherit;
+    .documento__acciones {
+        justify-content: flex-start;
+    }
+
+    .documento__acciones .boton-chico {
+        flex: 1;
+    }
 }
