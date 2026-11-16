@@ -1,4 +1,4 @@
-// Rutas del administrador: catalogo de roles y alta de personal.
+// Rutas del administrador: catalogo de roles, alta de personal, resumen y bitacora.
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { sql, getPool } = require('../db');
@@ -68,4 +68,83 @@ router.post('/crear-usuario', verificarSesion, soloAdministrador, async (req, re
     }
 });
 
-module.exports = router;
+// Numeros generales para el panel.
+router.get('/resumen', verificarSesion, soloAdministrador, async (req, res) => {
+    try {
+        const pool = await getPool();
+        const resultado = await pool.request().execute('sp_ResumenAdmin');
+        res.json(resultado.recordset[0]);
+    } catch (err) {
+        responderErrorSql(res, err, 'Error al obtener el resumen');
+    }
+});
+
+// Opciones de los filtros de la bitacora.
+router.get('/bitacora/filtros', verificarSesion, soloAdministrador, async (req, res) => {
+    try {
+        const pool = await getPool();
+        const resultado = await pool.request().execute('sp_FiltrosBitacora');
+        res.json({
+            acciones: resultado.recordsets[0].map(fila => fila.accion),
+            roles: resultado.recordsets[1]
+        });
+    } catch (err) {
+        responderErrorSql(res, err, 'Error al obtener los filtros');
+    }
+});
+
+// Fecha en formato AAAA-MM-DD que si exista en el calendario.
+function esFechaValida(texto) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(texto)) return false;
+    const fecha = new Date(texto + 'T00:00:00Z');
+    return !isNaN(fecha) && fecha.toISOString().slice(0, 10) === texto;
+}
+
+// Movimientos de la bitacora con filtros y por paginas.
+router.get('/bitacora', verificarSesion, soloAdministrador, async (req, res) => {
+    const { desde, hasta, accion, rol, texto } = req.query;
+    const pagina = req.query.pagina ? Number(req.query.pagina) : 1;
+    const tamano = req.query.tamano ? Number(req.query.tamano) : 25;
+
+    // Cada filtro debe venir una sola vez (ej. ?accion=a&accion=b no se acepta).
+    if ([desde, hasta, accion, rol, texto].some(v => v !== undefined && typeof v !== 'string')) {
+        return res.status(400).json({ success: false, mensaje: 'Los filtros no son válidos' });
+    }
+    if ((desde && !esFechaValida(desde)) || (hasta && !esFechaValida(hasta))) {
+        return res.status(400).json({ success: false, mensaje: 'Las fechas deben tener el formato AAAA-MM-DD' });
+    }
+    if (rol && !esIdValido(rol)) {
+        return res.status(400).json({ success: false, mensaje: 'El rol no es válido' });
+    }
+    if ((accion && String(accion).length > 255) || (texto && String(texto).length > 100)) {
+        return res.status(400).json({ success: false, mensaje: 'El texto de búsqueda es demasiado largo' });
+    }
+    if (!Number.isInteger(pagina) || pagina < 1 || !Number.isInteger(tamano) || tamano < 1 || tamano > 1000) {
+        return res.status(400).json({ success: false, mensaje: 'La página o el tamaño no son válidos' });
+    }
+
+    try {
+        const pool = await getPool();
+        const resultado = await pool.request()
+            .input('desde', sql.Date, desde ? new Date(desde + 'T00:00:00Z') : null)
+            .input('hasta', sql.Date, hasta ? new Date(hasta + 'T00:00:00Z') : null)
+            .input('accion', sql.VarChar(255), accion || null)
+            .input('id_rol', sql.Int, rol ? Number(rol) : null)
+            .input('texto', sql.VarChar(100), texto || null)
+            .input('pagina', sql.Int, pagina)
+            .input('tamano', sql.Int, tamano)
+            .execute('sp_ConsultarBitacora');
+
+        const total = resultado.recordsets[0][0].total;
+        res.json({
+            total,
+            pagina,
+            paginas: Math.max(1, Math.ceil(total / tamano)),
+            movimientos: resultado.recordsets[1]
+        });
+    } catch (err) {
+        responderErrorSql(res, err, 'Error al consultar la bitácora');
+    }
+});
+
+module.exports = router

@@ -189,7 +189,7 @@ async function editar(id) {
         const respuesta = await fetch(`${api}/${id}`);
         const p = await respuesta.json();
         if (!respuesta.ok) return alert('Error: ' + p.mensaje);
-
+//
         const poner = (campo, valor) => { document.getElementById(campo).value = valor ?? ''; };
         poner('idPrograma', p.id_programa);
         poner('folio', p.numero_folio);

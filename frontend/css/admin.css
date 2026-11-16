@@ -1,0 +1,283 @@
+/* 
+   PANEL DEL ADMINISTRADOR, BITACORA Y ALTA DE PERSONAL
+
+
+/* Ultimos movimientos en el panel */
+.movimientos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.movimientos li {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--borde-suave);
+    font-size: 1.45rem;
+}
+
+.movimientos li:last-child {
+    border-bottom: none;
+}
+
+.movimientos__hora {
+    flex-shrink: 0;
+    min-width: 11rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--texto-secundario);
+}
+
+.movimientos__texto strong {
+    display: block;
+    color: var(--tecnm-azul);
+}
+
+.movimientos__texto small {
+    color: var(--texto-secundario);
+    font-size: 1.3rem;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4rem;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.campo--ancho {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--tecnm-azul);
+}
+
+.campo input,
+.campo select {
+    font-family: inherit;
+    font-size: 1.45rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--borde-suave);
+    border-radius: 0.6rem;
+    background-color: var(--bg-blanco);
+    color: var(--texto-principal);
+    width: 100%;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: 2px solid var(--tecnm-azul-claro);
+    outline-offset: 1px;
+    border-color: var(--tecnm-azul-claro);
+}
+
+.campo small {
+    font-size: 1.2rem;
+    color: var(--texto-secundario);
+}
+
+.filtros__botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.8rem;
+}
+
+.filtros__botones button,
+.paginacion button,
+.cabecera-seccion button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+
+.tabla-contenedor {
+    overflow-x: auto;
+}
+
+.tabla-bitacora {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+}
+
+.tabla-bitacora th {
+    text-align: left;
+    background-color: var(--tecnm-azul);
+    color: #fff;
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tabla-bitacora td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--borde-suave);
+    vertical-align: top;
+    color: var(--texto-principal);
+}
+
+.tabla-bitacora tbody tr:nth-child(even) {
+    background-color: var(--bg-pagina);
+}
+
+.tabla-bitacora tbody tr:hover {
+    background-color: var(--tecnm-azul-suave);
+}
+
+.tabla-bitacora td small {
+    display: block;
+    color: var(--texto-secundario);
+    font-size: 1.2rem;
+}
+
+.tabla-bitacora .col-fecha {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.tabla-bitacora .col-detalles {
+    max-width: 36rem;
+    word-break: break-word;
+}
+
+.tabla-bitacora .vacio {
+    text-align: center;
+    color: var(--texto-secundario);
+    padding: 3rem;
+}
+
+.accion {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul);
+    white-space: nowrap;
+}
+
+.accion--alerta { background-color: var(--peligro-bg); color: var(--peligro); }
+.accion--acceso { background-color: #E7E9EE; color: #3E4A5B; }
+.accion--alta   { background-color: var(--exito-bg); color: var(--exito); }
+.accion--cambio { background-color: var(--advertencia-bg); color: var(--advertencia); }
+
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.6rem;
+    margin-top: 1.8rem;
+    font-size: 1.4rem;
+    color: var(--texto-secundario);
+}
+
+.paginacion button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.form-alta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.6rem;
+}
+
+@media (max-width: 900px) {
+    .filtros {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .filtros,
+    .form-alta {
+        grid-template-columns: 1fr;
+    }
+
+    .movimientos li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .tabla-bitacora thead {
+        display: none;
+    }
+
+    .tabla-bitacora tr {
+        display: block;
+        padding: 1.2rem 0;
+        border-bottom: 1px solid var(--borde-suave);
+    }
+
+    .tabla-bitacora td {
+        display: flex;
+        gap: 1rem;
+        padding: 0.4rem 0.8rem;
+        border-bottom: none;
+        font-size: 1.35rem;
+    }
+
+    .tabla-bitacora td::before {
+        content: attr(data-titulo);
+        flex-shrink: 0;
+        width: 7.5rem;
+        font-weight: 600;
+        color: var(--tecnm-azul);
+    }
+
+    .tabla-bitacora td.vacio::before {
+        content: none;
+    }
+}
+
+
+@media print {
+    .sin-imprimir {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .tarjeta,
+    .encabezado {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+    }
+
+    .tabla-contenedor {
+        overflow: visible;
+    }
+
+    .tabla-bitacora th {
+        background-color: #fff;
+        color: #000;
+        border-bottom: 2px solid #000;
+    }
+
+    .tabla-bitacora tbody tr:nth-child(even) {
+        background-color: transparent;
+    }
+
+    .accion {
+        background: none !important;
+        padding: 0;
+        color: #000 !important;
+    }
+}

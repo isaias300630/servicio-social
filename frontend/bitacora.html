@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora de Auditoría | TecNM Campus Culiacán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <header class="header-institucional sin-imprimir">
+        <div class="header-institucional__contenedor">
+            <div class="header-institucional__identidad">
+                <div class="header-institucional__escudo">
+                    TecNM
+                    <span>ITC</span>
+                </div>
+                <div class="header-institucional__titulos">
+                    <h2>Tecnológico Nacional de México</h2>
+                    <p>Instituto Tecnológico de Culiacán — Oficina de Servicio Social</p>
+                </div>
+            </div>
+            <div class="header-institucional__badge">
+                Administración del Sistema
+            </div>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol">Bitácora de auditoría</p>
+                <h1 class="encabezado__nombre">Movimientos del sistema</h1>
+                <p class="encabezado__periodo">Horas en tiempo de Culiacán. Cada acción importante queda registrada aquí.</p>
+            </div>
+            <nav class="barra barra--derecha sin-imprimir">
+                <a href="admin.html" class="boton boton-outline">Volver al panel</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Filtros -->
+        <section class="tarjeta sin-imprimir">
+            <form id="formFiltros">
+                <div class="filtros">
+                    <div class="campo">
+                        <label for="desde">Desde</label>
+                        <input type="date" id="desde">
+                    </div>
+                    <div class="campo">
+                        <label for="hasta">Hasta</label>
+                        <input type="date" id="hasta">
+                    </div>
+                    <div class="campo">
+                        <label for="accion">Acción</label>
+                        <select id="accion">
+                            <option value="">Todas las acciones</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="rol">Rol</label>
+                        <select id="rol">
+                            <option value="">Todos los roles</option>
+                        </select>
+                    </div>
+                    <div class="campo campo--ancho">
+                        <label for="texto">Buscar</label>
+                        <input type="search" id="texto" maxlength="100" placeholder="Nombre, correo o detalle (ej. 22170853)">
+                    </div>
+                </div>
+                <div class="filtros__botones">
+                    <button type="submit" class="boton">Buscar</button>
+                    <button type="button" class="boton boton-gris" id="limpiar">Limpiar filtros</button>
+                    <button type="button" class="boton boton-outline" id="rapidoHoy">Hoy</button>
+                    <button type="button" class="boton boton-outline" id="rapidoSemana">Últimos 7 días</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Resultados -->
+        <section class="tarjeta">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo" id="totalMovimientos">Movimientos</h2>
+                <div class="barra sin-imprimir">
+                    <button type="button" class="boton-chico boton-outline" id="descargarCsv">Descargar CSV</button>
+                    <button type="button" class="boton-chico boton-outline" id="imprimir">Imprimir</button>
+                </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla-bitacora">
+                    <thead>
+                        <tr>
+                            <th>Fecha y hora</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Acción</th>
+                            <th>Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                        <tr><td colspan="5">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="paginacion sin-imprimir">
+                <button type="button" class="boton-chico boton-gris" id="anterior">‹ Anterior</button>
+                <span id="textoPagina">Página 1 de 1</span>
+                <button type="button" class="boton-chico boton-gris" id="siguiente">Siguiente ›</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-tecnm sin-imprimir">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/bitacora.js"></script>
+</body>
+</html>

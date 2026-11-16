@@ -3,53 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administrador - TecNM</title>
+    <title>Panel del Administrador | TecNM Campus Culiacán</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-    <main class="login">
-        <section class="login__content">
-            <h1 class="login__title">Alta de Personal</h1>
-            <form class="form-register" id="adminForm">
 
-                <div class="form__field">
-                    <label class="login__label">Rol a asignar:</label>
-                    <select class="form__input" id="rolSelect" required>
-                        <option value="">Cargando roles...</option>
-                    </select>
+    <header class="header-institucional">
+        <div class="header-institucional__contenedor">
+            <div class="header-institucional__identidad">
+                <div class="header-institucional__escudo">
+                    TecNM
+                    <span>ITC</span>
                 </div>
+                <div class="header-institucional__titulos">
+                    <h2>Tecnológico Nacional de México</h2>
+                    <p>Instituto Tecnológico de Culiacán — Oficina de Servicio Social</p>
+                </div>
+            </div>
+            <div class="header-institucional__badge">
+                Administración del Sistema
+            </div>
+        </div>
+    </header>
 
-                <div class="form__field">
-                    <input class="form__input" type="text" id="nombre" placeholder="Nombre(s)" required>
-                </div>
-                <div class="form__field">
-                    <input class="form__input" type="text" id="paterno" placeholder="Apellido Paterno" required>
-                </div>
-                <div class="form__field">
-                    <input class="form__input" type="text" id="materno" placeholder="Apellido Materno">
-                </div>
-                <div class="form__field">
-                    <input class="form__input" type="text" id="departamento" placeholder="Departamento (Ej. Gestión Tecnológica)">
-                </div>
-                <div class="form__field">
-                    <input class="form__input" type="email" id="correo" placeholder="Correo Institucional" required>
-                </div>
-                <div class="form__field">
-                    <input class="form__input" type="password" id="password" placeholder="Contraseña de acceso" minlength="10" maxlength="64" required>
-                </div>
-
-                <button class="form__button" type="submit">Registrar Usuario</button>
-            </form>
-
-            <nav class="login__nav">
-                <a class="login__link" href="cuenta.html">Cambiar contraseña</a>
-                <a class="login__link" href="#" id="cerrarSesion">Cerrar sesión</a>
+    <main class="pagina">
+        <!-- Datos del administrador -->
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol">Administrador del Sistema</p>
+                <h1 class="encabezado__nombre" id="saludo">Bienvenido</h1>
+                <p class="encabezado__periodo" id="periodoActivo">Consultando periodo escolar...</p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="cuenta.html" class="boton boton-outline">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
             </nav>
+        </header>
+
+        <section class="resumen">
+            <div class="dato">
+                <span class="dato__numero" id="usuariosActivos">–</span>
+                <span class="dato__texto">Usuarios activos</span>
+            </div>
+            <div class="dato dato--lugares">
+                <span class="dato__numero" id="alumnos">–</span>
+                <span class="dato__texto">Alumnos</span>
+            </div>
+            <div class="dato">
+                <span class="dato__numero" id="personal">–</span>
+                <span class="dato__texto">Personal</span>
+            </div>
+            <div class="dato dato--aprobado">
+                <span class="dato__numero" id="programas">–</span>
+                <span class="dato__texto">Programas</span>
+            </div>
+            <div class="dato dato--pendiente">
+                <span class="dato__numero" id="documentosPendientes">–</span>
+                <span class="dato__texto">Documentos por revisar</span>
+            </div>
+            <div class="dato dato--rechazado">
+                <span class="dato__numero" id="movimientosHoy">–</span>
+                <span class="dato__texto">Movimientos hoy</span>
+            </div>
+        </section>
+
+        <div class="cabecera-bloque">
+            <h2 class="seccion">Módulos de Administración</h2>
+        </div>
+
+        <section class="funciones">
+            <a class="funcion funcion--principal" href="bitacora.html">
+                <span class="funcion__titulo">Bitácora de auditoría</span>
+                <span class="funcion__texto">Consulta quién hizo cada movimiento en el sistema y cuándo.</span>
+            </a>
+
+            <a class="funcion" href="personal.html">
+                <span class="funcion__titulo">Alta de personal</span>
+                <span class="funcion__texto">Registra Jefes de Oficina, Jefes de Vinculación y Administradores.</span>
+            </a>
+
+            <a class="funcion" href="cuenta.html">
+                <span class="funcion__titulo">Mi cuenta</span>
+                <span class="funcion__texto">Cambia tu contraseña de acceso institucional.</span>
+            </a>
+
+            <div class="funcion funcion--pronto">
+                <span class="funcion__titulo">Periodos escolares <span class="etiqueta">Próximamente</span></span>
+                <span class="funcion__texto">Crea y activa periodos con sus fechas de reportes bimestrales.</span>
+            </div>
+
+            <div class="funcion funcion--pronto">
+                <span class="funcion__titulo">Roles y cuentas <span class="etiqueta">Próximamente</span></span>
+                <span class="funcion__texto">Cambia el rol de un usuario o activa y desactiva su cuenta.</span>
+            </div>
+
+            <div class="funcion funcion--pronto">
+                <span class="funcion__titulo">Respaldos <span class="etiqueta">Próximamente</span></span>
+                <span class="funcion__texto">Copias de seguridad de la base de datos con fecha y hora.</span>
+            </div>
+        </section>
+
+        <!-- Ultimos movimientos -->
+        <section class="tarjeta">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Últimos movimientos</h2>
+                <a href="bitacora.html" class="boton-chico">Ver bitácora completa</a>
+            </div>
+            <ul class="movimientos" id="ultimosMovimientos">
+                <li>Cargando...</li>
+            </ul>
         </section>
     </main>
+
+    <footer class="footer-tecnm">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
 
     <script src="js/admin.js"></script>
 </body>

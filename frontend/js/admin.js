@@ -1,6 +1,10 @@
-// Alta de personal: solo para el Administrador.
+// Panel del Administrador: resumen del sistema y ultimos movimientos de la bitacora.
 const token = localStorage.getItem('token');
-if (!token) window.location.href = 'index.html';
+const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+
+if (!token || usuario.rol !== 'Administrador') {
+    window.location.href = 'index.html';
+}
 
 // Evita que un texto se interprete como HTML.
 function escapar(texto) {
@@ -9,82 +13,72 @@ function escapar(texto) {
     ));
 }
 
-// Carga los roles disponibles al abrir la pagina.
+// La bitacora ya viene en hora de Culiacan, se muestra tal cual.
+function fechaHora(valor) {
+    return new Date(valor).toLocaleString('es-MX', {
+        timeZone: 'UTC', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+    });
+}
+
+// Peticion con el token; si la sesion vencio regresa al login.
+async function pedir(ruta) {
+    const respuesta = await fetch(ruta, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (respuesta.status === 401 || respuesta.status === 403) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+    return respuesta;
+}
+
+document.getElementById('saludo').textContent = 'Hola, ' + (usuario.nombre || 'Administrador');
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch('/api/admin/roles', {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
+        const [resResumen, resBitacora] = await Promise.all([
+            pedir('/api/admin/resumen'),
+            pedir('/api/admin/bitacora?tamano=8')
+        ]);
+        const resumen = await resResumen.json();
+        const bitacora = await resBitacora.json();
 
-        if (response.status === 401 || response.status === 403) {
-            alert('Necesitas iniciar sesión como Administrador.');
-            window.location.href = 'index.html';
-            return;
-        }
-
-        const roles = await response.json();
-
-        const select = document.getElementById('rolSelect');
-        select.innerHTML = '<option value="">-- Selecciona un rol --</option>';
-
-        roles.forEach(rol => {
-            select.innerHTML += `<option value="${Number(rol.id_rol)}">${escapar(rol.nombre_rol)}</option>`;
-        });
+        if (resResumen.ok) mostrarResumen(resumen);
+        mostrarMovimientos(resBitacora.ok ? bitacora.movimientos : []);
     } catch (error) {
-        console.error('Error cargando los roles:', error);
-        document.getElementById('rolSelect').innerHTML = '<option value="">Error al cargar roles</option>';
+        console.error('Error al cargar el panel:', error);
+        document.getElementById('ultimosMovimientos').innerHTML = '<li>No se pudo conectar con el servidor.</li>';
     }
 });
 
-// Envia los datos del nuevo usuario al servidor.
-document.getElementById('adminForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+function mostrarResumen(r) {
+    const poner = (id, valor) => { document.getElementById(id).textContent = valor ?? 0; };
+    poner('usuariosActivos', r.usuarios_activos);
+    poner('alumnos', r.alumnos);
+    poner('personal', r.personal);
+    poner('programas', r.programas);
+    poner('documentosPendientes', r.documentos_pendientes);
+    poner('movimientosHoy', r.movimientos_hoy);
+    document.getElementById('periodoActivo').textContent =
+        r.periodo_activo ? 'Periodo activo: ' + r.periodo_activo : 'No hay un periodo escolar activo';
+}
 
-    const correoVal = document.getElementById('correo').value.trim().toLowerCase();
-    const passVal = document.getElementById('password').value;
-    if (!/^[^\s@]+@culiacan\.tecnm\.mx$/.test(correoVal)) {
-        alert('El correo debe terminar en @culiacan.tecnm.mx'); return;
+function mostrarMovimientos(lista) {
+    const caja = document.getElementById('ultimosMovimientos');
+    if (lista.length === 0) {
+        caja.innerHTML = '<li>Todavía no hay movimientos registrados.</li>';
+        return;
     }
-    if (passVal.length < 10 || passVal.length > 64 || !/[A-Z]/.test(passVal) || !/\d/.test(passVal)) {
-        alert('La contraseña debe tener entre 10 y 64 caracteres, una mayúscula y un número.'); return;
-    }
-
-    const payload = {
-        id_rol: document.getElementById('rolSelect').value,
-        nombre: document.getElementById('nombre').value,
-        paterno: document.getElementById('paterno').value,
-        materno: document.getElementById('materno').value,
-        departamento: document.getElementById('departamento').value,
-        correo: correoVal,
-        password: document.getElementById('password').value
-    };
-
-    try {
-        const response = await fetch('/api/admin/crear-usuario', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-            alert(data.mensaje);
-            document.getElementById('adminForm').reset();
-        } else {
-            alert('Error: ' + data.mensaje);
-        }
-    } catch (error) {
-        console.error('Error de conexión:', error);
-        alert('No se pudo conectar con el servidor.');
-    }
-});
+    caja.innerHTML = lista.map(m => `
+        <li>
+            <span class="movimientos__hora">${fechaHora(m.fecha_local)}</span>
+            <span class="movimientos__texto">
+                <strong>${escapar(m.accion)}</strong>
+                <small>${escapar(m.usuario)} · ${escapar(m.rol || 'Sin rol')}</small>
+            </span>
+        </li>`).join('');
+}
 
 document.getElementById('cerrarSesion').addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.clear();
     window.location.href = 'index.html';
-});
+})
