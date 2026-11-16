@@ -1,3 +1,15 @@
+// Mostrar / ocultar contraseña en el login
+const togglePasswordBtn = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
+
+if (togglePasswordBtn && passwordInput) {
+    togglePasswordBtn.addEventListener('click', () => {
+        const esPassword = passwordInput.type === 'password';
+        passwordInput.type = esPassword ? 'text' : 'password';
+        togglePasswordBtn.textContent = esPassword ? 'Ocultar' : 'Mostrar';
+    });
+}
+
 // Inicio de sesion para todos los roles.
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -47,9 +59,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         alert('No se pudo conectar con el servidor.');
     }
 });
-
-
-//en proceso
 
 // Enlaces de ayuda del login.
 document.getElementById('enlaceAyuda').addEventListener('click', (e) => {
