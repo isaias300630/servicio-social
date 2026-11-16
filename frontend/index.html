@@ -4,34 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet">
-    <title>Inicio de Sesión</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Acceso al Sistema | Servicio Social - TecNM Campus Culiacán</title>
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-<main class="login">
-    <section class="login__content">
-        <h1 class="login__title">Inicia Sesión</h1>
-        <form class="form-register" id="loginForm">
-            <div class="form__field">
-                <label class="login__label" for="correo_institucional">Correo Electrónico:</label>
-                <input class="form__input" type="email" id="correo_institucional" placeholder="Ingrese su correo institucional" required>
-            </div>
-            <div class="form__field">
-                <label class="login__label" for="password">Contraseña:</label>
-                <input class="form__input" type="password" id="password" placeholder="*******" required>
-            </div>
-            <button class="form__button" type="submit">Iniciar Sesión</button>
-        </form>
 
-        <nav class="login__nav">
-            <a class="login__link" href="#" id="enlaceAyuda">¿Necesitas ayuda? Comunícate con nosotros</a>
-            <a class="login__link" href="#" id="enlaceOlvido">¿Olvidaste tu contraseña? <span>Restablecer</span></a>
-        </nav>
-    </section>
-</main>
+    <!-- Cintillo Superior Gobierno de México / SEP -->
+    <div class="header-gob">
+        <div class="header-gob__marca">
+            <span>GOBIERNO DE MÉXICO</span>
+            <span>|</span>
+            <span>SEP</span>
+        </div>
+        <span class="header-gob__texto">Secretaría de Educación Pública</span>
+    </div>
 
-<script src="js/login.js"></script>
+    <!-- Encabezado Institucional TecNM -->
+    <header class="header-institucional">
+        <div class="header-institucional__contenedor">
+            <div class="header-institucional__identidad">
+                <div class="header-institucional__escudo">
+                    TecNM
+                    <span>ITC</span>
+                </div>
+                <div class="header-institucional__titulos">
+                    <h2>Tecnológico Nacional de México</h2>
+                    <p>Instituto Tecnológico de Culiacán — Depto. de Gestión Tecnológica y Vinculación</p>
+                </div>
+            </div>
+            <div class="header-institucional__badge">
+                Oficina de Servicio Social y Desarrollo Comunitario
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Navegación Azul TecNM -->
+    <nav class="navbar-tecnm">
+        <div class="navbar-tecnm__contenedor">
+            <span><strong>Portal de Gestión del Servicio Social</strong></span>
+            <span>Ciclo Escolar Vigente</span>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal: Tarjeta de Login -->
+    <main class="login">
+        <section class="login__content">
+            <div class="login__encabezado">
+                <span class="login__subtitulo-inst">Acceso Institucional</span>
+                <h1 class="login__title">Iniciar Sesión</h1>
+                <p class="login__desc">Ingresa con tu cuenta oficial del Instituto Tecnológico de Culiacán</p>
+            </div>
+
+            <form class="form-register" id="loginForm">
+                <div class="form__field">
+                    <label class="login__label" for="correo_institucional">Correo Institucional:</label>
+                    <input
+                        class="form__input"
+                        type="email"
+                        id="correo_institucional"
+                        placeholder="usuario@culiacan.tecnm.mx"
+                        autocomplete="email"
+                        required
+                    >
+                    <small class="form__ayuda">Dominio requerido: @culiacan.tecnm.mx</small>
+                </div>
+
+                <div class="form__field">
+                    <label class="login__label" for="password">Contraseña:</label>
+                    <div class="form__input-group">
+                        <input
+                            class="form__input"
+                            type="password"
+                            id="password"
+                            placeholder="Ingresa tu contraseña"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button type="button" class="form__toggle-pass" id="togglePassword">Mostrar</button>
+                    </div>
+                </div>
+
+                <button class="form__button" type="submit">Ingresar al Portal</button>
+            </form>
+
+            <nav class="login__nav">
+                <a class="login__link" href="#" id="enlaceAyuda">¿Necesitas ayuda? <span>Comunícate con nosotros</span></a>
+                <a class="login__link" href="#" id="enlaceOlvido">¿Olvidaste tu contraseña? <span>Restablecer aquí</span></a>
+            </nav>
+        </section>
+    </main>
+
+    <!-- Pie de Página Oficial -->
+    <footer class="footer-tecnm">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/login.js"></script>
 </body>
 </html>
