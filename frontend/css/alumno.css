@@ -32,6 +32,9 @@
     background-color: #fff;
     color: #000000;
 }
+.avance__texto {
+    color: #000000;
+}
 
 .avance__paso--listo {
     color: #0000;
