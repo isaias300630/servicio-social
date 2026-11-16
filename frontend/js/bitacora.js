@@ -59,8 +59,9 @@ function leerFiltros() {
     return parametros;
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await cargarFiltros();
+// Los filtros 
+document.addEventListener('DOMContentLoaded', () => {
+    cargarFiltros();
     buscar(1);
 });
 

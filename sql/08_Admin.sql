@@ -100,10 +100,8 @@ begin
           and isnull(correo, '') not like '%' + @texto + '%'
           and isnull(detalles, '') not like '%' + @texto + '%';
 
-    -- 1. Total
     select count(*) as total from #movimientos;
 
-    -- 2. Pagina pedida
     select id_log, fecha_local, accion, detalles, correo, rol, usuario
     from #movimientos
     order by fecha_local desc, id_log desc
