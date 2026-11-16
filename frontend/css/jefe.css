@@ -1,119 +1,247 @@
-/* Estilos del panel del Jefe de Oficina */
+/* ==========================================================================
+   PANEL DEL JEFE DE OFICINA DE SERVICIO SOCIAL - IDENTIDAD TECNM
+   ========================================================================== */
 
+.pagina {
+    flex: 1;
+    width: 100%;
+    max-width: 114rem;
+    margin: 0 auto;
+    padding: 3.2rem 2rem 5rem;
+}
+
+/* ==========================================================================
+   ENCABEZADO DEL PANEL
+   ========================================================================== */
 .encabezado {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 2.4rem 2.8rem;
+    margin-bottom: 2.6rem;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+    border-left: 5px solid var(--tecnm-azul);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
     flex-wrap: wrap;
-    margin-bottom: 3rem;
 }
 
 .encabezado__rol {
-    color: rgb(113, 202, 253);
-    font-size: 1.4rem;
-    font-weight: bold;
+    display: inline-block;
+    color: var(--tecnm-azul);
+    background-color: var(--tecnm-azul-suave);
+    padding: 0.35rem 1.1rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1rem;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.8rem;
 }
 
 .encabezado__nombre {
-    color: #fff;
-    font-size: 3rem;
-    margin: 0.5rem 0;
+    color: var(--tecnm-azul);
+    font-size: 2.4rem;
+    line-height: 1.25;
+    margin: 0 0 0.4rem 0;
 }
 
 .encabezado__periodo {
-    color: #aaa;
-    font-size: 1.5rem;
+    color: var(--texto-secundario);
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+.barra {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
 }
 
 .barra--derecha {
     margin-bottom: 0;
 }
 
-/* Tarjetas con numeros */
-.resumen {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 4rem;
+/* ==========================================================================
+   BOTONES INSTITUCIONALES
+   ========================================================================== */
+.boton,
+.boton-chico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    border: 1.5px solid var(--tecnm-azul);
+    border-radius: 0.6rem;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
 }
 
-.dato {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    border-top: 0.4rem solid rgb(0, 174, 255);
-    border-radius: 1rem;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.dato--pendiente { border-top-color: #f1c40f; }
-.dato--aprobado  { border-top-color: #2ecc71; }
-.dato--rechazado { border-top-color: #e74c3c; }
-
-.dato__numero {
-    color: #fff;
-    font-size: 3.2rem;
-    font-weight: 800;
-}
-
-.dato__texto {
-    color: #aaa;
+.boton {
+    padding: 1.05rem 1.8rem;
     font-size: 1.4rem;
 }
 
-.seccion {
-    color: #e0e0e0;
-    font-size: 2.2rem;
-    margin-bottom: 2rem;
+.boton-chico {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.35rem;
 }
 
-/* Accesos a cada funcion */
+.boton:hover,
+.boton-chico:hover {
+    background-color: var(--tecnm-azul-oscuro);
+    border-color: var(--tecnm-azul-oscuro);
+    transform: translateY(-1px);
+}
+
+.boton-outline {
+    background-color: #FFFFFF;
+    color: var(--tecnm-azul);
+    border: 1.5px solid var(--tecnm-azul);
+}
+
+.boton-outline:hover {
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul-oscuro);
+}
+
+.boton-gris {
+    background-color: #F1F5F9;
+    color: var(--texto-principal);
+    border: 1.5px solid #CBD5E1;
+}
+
+.boton-gris:hover {
+    background-color: #E2E8F0;
+    border-color: #94A3B8;
+    color: #0F172A;
+}
+
+/* ==========================================================================
+   TARJETAS DE RESUMEN (INDICADORES / KPIs)
+   ========================================================================== */
+.resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1.6rem;
+    margin-bottom: 3.4rem;
+}
+
+.dato {
+    background-color: var(--bg-blanco);
+    border: 1px solid var(--borde-suave);
+    border-top: 4px solid var(--tecnm-azul);
+    border-radius: var(--radio-borde);
+    padding: 2rem 2.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    box-shadow: var(--sombra-card);
+}
+
+.dato--pendiente { border-top-color: #D97706; }
+.dato--aprobado  { border-top-color: var(--exito); }
+.dato--rechazado { border-top-color: var(--peligro); }
+.dato--lugares   { border-top-color: var(--gob-dorado); }
+
+.dato__numero {
+    color: var(--tecnm-azul);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.dato--pendiente .dato__numero { color: #B45309; }
+.dato--aprobado .dato__numero  { color: var(--exito); }
+.dato--rechazado .dato__numero { color: var(--peligro); }
+
+.dato__texto {
+    color: var(--texto-secundario);
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   ACCESOS A CADA FUNCIÓN (MÓDULOS)
+   ========================================================================== */
+.cabecera-bloque {
+    margin-bottom: 1.8rem;
+}
+
+.seccion {
+    color: var(--tecnm-azul);
+    font-size: 2rem;
+    margin: 0;
+}
+
 .funciones {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+    gap: 1.8rem;
+    margin-bottom: 3.4rem;
 }
 
 .funcion {
-    background-color: rgb(153, 146, 146);
-    border-radius: 1rem;
+    background-color: var(--bg-blanco);
+    border: 1.5px solid var(--borde-suave);
+    border-left: 4px solid var(--tecnm-azul);
+    border-radius: var(--radio-borde);
     padding: 2.2rem;
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
     text-decoration: none;
-    color: #1a1a1a;
-    box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    color: var(--texto-principal);
+    box-shadow: var(--sombra-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 a.funcion:hover {
-    transform: translateY(-3px);
-    background-color: rgb(170, 164, 164);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+    border-color: var(--tecnm-azul);
 }
 
+/* Tarjeta destacada: Subir programa */
 .funcion--principal {
-    background-color: rgb(0, 174, 255);
+    background-color: var(--tecnm-azul);
+    border-color: var(--tecnm-azul);
+    border-left: 4px solid var(--gob-dorado);
+    color: #FFFFFF;
+}
+
+.funcion--principal .funcion__titulo {
+    color: #FFFFFF;
+}
+
+.funcion--principal .funcion__texto {
+    color: #E2E8F0;
 }
 
 a.funcion--principal:hover {
-    background-color: #00e6db;
+    background-color: var(--tecnm-azul-oscuro);
+    border-color: var(--tecnm-azul-oscuro);
 }
 
 .funcion--pronto {
-    opacity: 0.55;
+    background-color: #F8FAFC;
+    border-left-color: #94A3B8;
+    opacity: 0.72;
     cursor: default;
 }
 
 .funcion__titulo {
-    font-size: 1.9rem;
-    font-weight: bold;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--tecnm-azul);
     display: flex;
     align-items: center;
     gap: 0.8rem;
@@ -122,27 +250,62 @@ a.funcion--principal:hover {
 
 .funcion__texto {
     font-size: 1.4rem;
+    color: var(--texto-secundario);
+    line-height: 1.5;
 }
 
 .etiqueta {
     font-size: 1.1rem;
-    background-color: #1a1a1a;
-    color: #fff;
-    padding: 0.2rem 0.8rem;
-    border-radius: 1rem;
+    font-weight: 700;
+    background-color: #E2E8F0;
+    color: #475569;
+    padding: 0.25rem 0.9rem;
+    border-radius: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
 }
 
 .globo {
     font-size: 1.2rem;
-    background-color: #f1c40f;
-    color: #000;
+    font-weight: 700;
+    background-color: #FEF3C7;
+    color: #B45309;
+    border: 1px solid #F59E0B;
     min-width: 2.4rem;
-    padding: 0.2rem 0.8rem;
-    border-radius: 1.2rem;
+    padding: 0.15rem 0.8rem;
+    border-radius: 2rem;
     text-align: center;
 }
 
-/* Lista de pendientes */
+/* ==========================================================================
+   TARJETA Y LISTA DE PENDIENTES DE REVISAR
+   ========================================================================== */
+.tarjeta {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 2.6rem 3rem;
+    margin-bottom: 2.4rem;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+}
+
+.cabecera-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1.4rem;
+    margin-bottom: 1.4rem;
+    border-bottom: 2px solid var(--tecnm-azul-suave);
+}
+
+.subtitulo {
+    font-size: 1.9rem;
+    color: var(--tecnm-azul);
+    margin: 0;
+}
+
 .lista-pendientes {
     list-style: none;
     padding: 0;
@@ -153,21 +316,28 @@ a.funcion--principal:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    padding: 1.2rem 0;
-    border-bottom: 1px solid #777;
+    gap: 1.4rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--borde-suave);
     font-size: 1.5rem;
-    color: #1a1a1a;
+    color: var(--texto-principal);
 }
 
 .lista-pendientes li:last-child {
     border-bottom: none;
+    padding-bottom: 0;
+}
+
+.lista-pendientes strong {
+    color: var(--tecnm-azul);
+    font-size: 1.55rem;
 }
 
 .lista-pendientes small {
     display: block;
-    color: #333;
-    font-size: 1.3rem;
+    color: var(--texto-secundario);
+    font-size: 1.35rem;
+    margin-top: 0.3rem;
 }
 
 .lista-pendientes .boton-chico {
@@ -175,16 +345,30 @@ a.funcion--principal:hover {
     white-space: nowrap;
 }
 
-@media (max-width: 600px) {
-    .encabezado__nombre {
-        font-size: 2.4rem;
+@media (max-width: 650px) {
+    .encabezado {
+        padding: 2rem;
     }
+
+    .tarjeta {
+        padding: 2rem;
+    }
+
     .barra--derecha {
         width: 100%;
     }
+
     .barra--derecha .boton {
         flex: 1;
         text-align: center;
-        padding: 1.2rem 1rem;
+    }
+
+    .lista-pendientes li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .lista-pendientes .boton-chico {
+        width: 100%;
     }
 }
