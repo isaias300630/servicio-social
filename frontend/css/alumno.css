@@ -29,8 +29,8 @@
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background-color: #333;
-    color: #ddd;
+    background-color: #fff;
+    color: #000000;
 }
 
 .avance__paso--listo {
