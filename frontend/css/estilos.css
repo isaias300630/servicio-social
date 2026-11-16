@@ -1,143 +1,404 @@
-*, *::after, 
-*::before {
+/* ==========================================================================
+   SISTEMA DE GESTIÓN DE SERVICIO SOCIAL - TECNM CAMPUS CULIACÁN
+   Identidad Visual Oficial: TecNM / SEP / Gobierno de México
+   ========================================================================== */
+
+:root {
+    /* Colores Institucionales TecNM */
+    --tecnm-azul: #1B396A;
+    --tecnm-azul-oscuro: #122749;
+    --tecnm-azul-claro: #2C5282;
+    --tecnm-azul-suave: #EBF1F8;
+
+    /* Colores Institucionales Gobierno / SEP */
+    --gob-guinda: #611232;
+    --gob-guinda-oscuro: #4A0D26;
+    --gob-dorado: #B38E5D;
+    --gob-dorado-claro: #D4C19C;
+
+    /* Neutros y Fondos */
+    --bg-pagina: #F4F6F9;
+    --bg-blanco: #FFFFFF;
+    --texto-principal: #212529;
+    --texto-secundario: #5A626A;
+    --borde-suave: #DCE1E7;
+
+    /* Estados */
+    --exito: #198754;
+    --exito-bg: #D1E7DD;
+    --advertencia: #B45309;
+    --advertencia-bg: #FEF3C7;
+    --peligro: #B02A37;
+    --peligro-bg: #F8D7DA;
+
+    /* Sombras y Bordes */
+    --sombra-card: 0 4px 16px rgba(27, 57, 106, 0.08);
+    --sombra-hover: 0 8px 24px rgba(27, 57, 106, 0.14);
+    --radio-borde: 0.8rem;
+}
+
+*, *::after, *::before {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-
 }
 
-
-
 html {
-   box-sizing: inherit;
-   font-size: 62.5%;
-
+    box-sizing: inherit;
+    font-size: 62.5%; /* 1rem = 10px */
 }
 
 body {
-    font-size: 1.6rem;
-    font-family: 'Open Sans', sans-serif;
-    background-color: #000;
-
+    font-size: 1.5rem;
+    font-family: 'Montserrat', 'Open Sans', sans-serif;
+    background-color: var(--bg-pagina);
+    color: var(--texto-principal);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
-
-
 
 :is(h1, h2, h3, h4) {
-    font-family: 'Open Sans', sans-serif;
-    
+    font-family: 'Montserrat', 'Open Sans', sans-serif;
+    color: var(--tecnm-azul);
+    font-weight: 700;
 }
 
-a{
+a {
     text-decoration: none;
     color: inherit;
 }
 
-.login{
+[hidden] {
+    display: none !important;
+}
+
+/* ==========================================================================
+   ENCABEZADO OFICIAL GOBIERNO / SEP / TECNM
+   ========================================================================== */
+.header-gob {
+    background-color: var(--gob-guinda);
+    color: #FFFFFF;
+    padding: 0.7rem 2.4rem;
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--gob-dorado);
+}
+
+.header-gob__marca {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.header-gob__texto {
+    opacity: 0.92;
+    font-size: 1.2rem;
+}
+
+.header-institucional {
+    background-color: var(--bg-blanco);
+    border-bottom: 1px solid var(--borde-suave);
+    padding: 1.4rem 2.4rem;
+}
+
+.header-institucional__contenedor {
+    max-width: 120rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.header-institucional__identidad {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.header-institucional__escudo {
+    width: 5.4rem;
+    height: 5.4rem;
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    line-height: 1.1;
+    border: 2px solid var(--gob-dorado);
+    flex-shrink: 0;
+}
+
+.header-institucional__escudo span {
+    font-size: 0.9rem;
+    color: var(--gob-dorado-claro);
+    font-weight: 600;
+}
+
+.header-institucional__titulos h2 {
+    font-size: 1.7rem;
+    color: var(--tecnm-azul);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.2rem;
+}
+
+.header-institucional__titulos p {
+    font-size: 1.35rem;
+    color: var(--texto-secundario);
+    font-weight: 500;
+}
+
+.header-institucional__badge {
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul);
+    border-left: 4px solid var(--tecnm-azul);
+    padding: 0.8rem 1.4rem;
+    border-radius: 0.4rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.navbar-tecnm {
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    padding: 0.9rem 2.4rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.navbar-tecnm__contenedor {
+    max-width: 120rem;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.35rem;
+}
+
+/* ==========================================================================
+   PANTALLA DE INICIO DE SESIÓN (LOGIN)
+   ========================================================================== */
+.login {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    
-
+    padding: 4rem 1.6rem;
+    background: linear-gradient(180deg, #EBF1F8 0%, #F4F6F9 100%);
 }
 
-.login__content{
-    background-color:rgb(153, 146, 146);
-    border-radius: 1rem;
-    padding: 4rem;
-    max-width: 45rem;
-    width: 90%;
-    box-shadow: 0 1rem 3rem rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,0,0.2);
-
-
-}
-
-.login__title{
-    color: rgb(113, 202, 253);
-    font-size: 3.2rem;
-    text-align: center;
-    margin-bottom: 3.6rem;
-
-}
-
-.login__nav{
-    text-align: center;
-    margin-top: 3rem;
-}
-
-.login__link{
-    display: block;
-    color: #e0e0e0;
-}
-
-.login__link:first-child{
-    margin-bottom: 1.5rem;
-}
-
-
-.form__field{
-    margin-bottom: 3rem;
-
-}
-
-.form__label{
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #e0e0e0;
-    
-
-}
-
-.form__input{
+.login__content {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 3.6rem 4rem;
+    max-width: 46rem;
     width: 100%;
-    padding: 1.2rem;
-    border-radius: 0.5rem;
-    font-size: 1.6rem;
-    background-color: #1a1a1a;
-    border: 1px solid #333333;
-    color: white;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+    border-top: 5px solid var(--tecnm-azul);
+}
+
+.login__encabezado {
+    text-align: center;
+    margin-bottom: 2.8rem;
+}
+
+.login__subtitulo-inst {
+    display: inline-block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--gob-guinda);
+    background-color: #FDF2F5;
+    padding: 0.4rem 1.2rem;
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+}
+
+.login__title {
+    color: var(--tecnm-azul);
+    font-size: 2.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.login__desc {
+    color: var(--texto-secundario);
+    font-size: 1.35rem;
+}
+
+/* Formularios Reutilizables */
+.form__field {
+    margin-bottom: 2.2rem;
+}
+
+.form__label,
+.login__label {
+    display: block;
+    margin-bottom: 0.7rem;
+    color: var(--texto-principal);
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.form__input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form__input {
+    width: 100%;
+    padding: 1.2rem 1.4rem;
+    border-radius: 0.6rem;
+    font-size: 1.5rem;
+    font-family: inherit;
+    background-color: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    color: var(--texto-principal);
     outline: none;
-    
-
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form__input:focus,
-.form__input:active
-{
-    border: 1px solid #ffd700;
-    box-shadow: 0 0 0 3px rgba(255,215,0,0.3);
+.form__input::placeholder {
+    color: #94A3B8;
 }
 
-.form__button{
-    width: 100%;
-    padding: 1.5rem;
-    background-color: rgb(0, 174, 255);
-    color: black;
+.form__input:focus {
+    border-color: var(--tecnm-azul);
+    box-shadow: 0 0 0 3px rgba(27, 57, 106, 0.15);
+}
+
+.form__toggle-pass {
+    position: absolute;
+    right: 1.2rem;
+    background: none;
     border: none;
-    border-radius: 1rem;
-    font-size: 2rem;
-    font-weight: bold;
+    color: var(--texto-secundario);
+    font-size: 1.25rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 5px 15px rgba (255,215,0,0.4);
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.4rem;
 }
 
-@media (hover: hover)and (pointer: fine) {
-    .form__button:hover {
-        background-color: #00e6db;
-        transform: translateY(-2px);
+.form__toggle-pass:hover {
+    color: var(--tecnm-azul);
+    background-color: var(--tecnm-azul-suave);
+}
+
+.form__ayuda {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    color: var(--texto-secundario);
+}
+
+/* Botón Principal TecNM */
+.form__button,
+.btn-tecnm {
+    width: 100%;
+    padding: 1.3rem 2rem;
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 0.6rem;
+    font-size: 1.55rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    box-shadow: 0 4px 12px rgba(27, 57, 106, 0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .form__button:hover,
+    .btn-tecnm:hover {
+        background-color: var(--tecnm-azul-oscuro);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(27, 57, 106, 0.3);
     }
 }
 
+.form__button:active,
+.btn-tecnm:active {
+    transform: translateY(0);
+}
 
+/* Enlaces del Login */
+.login__nav {
+    text-align: center;
+    margin-top: 2.6rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--borde-suave);
+}
 
+.login__link {
+    display: block;
+    color: var(--texto-secundario);
+    font-size: 1.35rem;
+    transition: color 0.2s ease;
+}
 
+.login__link:first-child {
+    margin-bottom: 1.2rem;
+}
 
+.login__link span {
+    color: var(--tecnm-azul);
+    font-weight: 700;
+    text-decoration: underline;
+}
 
+.login__link:hover {
+    color: var(--tecnm-azul);
+}
 
-/* Oculta elementos marcados con hidden */
-[hidden] {
-    display: none !important;
+/* ==========================================================================
+   FOOTER INSTITUCIONAL
+   ========================================================================== */
+.footer-tecnm {
+    background-color: var(--tecnm-azul-oscuro);
+    color: #E2E8F0;
+    padding: 2rem 2.4rem;
+    font-size: 1.3rem;
+    border-top: 4px solid var(--gob-dorado);
+    margin-top: auto;
+}
+
+.footer-tecnm__contenedor {
+    max-width: 120rem;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+}
+
+.footer-tecnm strong {
+    color: #FFFFFF;
+}
+
+@media (max-width: 600px) {
+    .header-gob {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.3rem;
+    }
+
+    .login__content {
+        padding: 2.6rem 2rem;
+    }
 }
