@@ -1,24 +1,32 @@
-// Envio de correos con nodemailer (datos SMTP en el archivo .env).
+// Envio de correos con nodemailer (datos SMTP en el archivo .env o respaldo configurado).
 require('dotenv').config();
 const nodemailer = require('nodemailer');
+
+// Valores configurados en .env (con respaldo para que funcione tambien en Render/Codespaces aunque falte en el entorno).
+const SMTP_CONFIG = {
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT) || 587,
+    user: process.env.SMTP_USER || 'jorge1805m@gmail.com',
+    pass: process.env.SMTP_PASS || 'heie nbzs eeep cgqr',
+    from: process.env.SMTP_FROM || 'Servicio Social TecNM Culiacan <jorge1805m@gmail.com>'
+};
 
 // El transporte se crea una sola vez y se reutiliza.
 let transporte;
 
 function smtpConfigurado() {
-    return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+    return Boolean(SMTP_CONFIG.host && SMTP_CONFIG.user && SMTP_CONFIG.pass);
 }
 
 function obtenerTransporte() {
     if (!transporte) {
-        const puerto = Number(process.env.SMTP_PORT) || 587;
         transporte = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: puerto,
-            secure: puerto === 465, // 465 = SSL directo; 587 = STARTTLS
+            host: SMTP_CONFIG.host,
+            port: SMTP_CONFIG.port,
+            secure: SMTP_CONFIG.port === 465, // 465 = SSL directo; 587 = STARTTLS
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
+                user: SMTP_CONFIG.user,
+                pass: SMTP_CONFIG.pass
             }
         });
     }
@@ -34,11 +42,7 @@ function escaparHtml(texto) {
 
 // Manda el codigo de recuperacion de contrasena.
 async function enviarCodigoRecuperacion(destinatario, nombre, codigo, minutosVigencia) {
-    // Sin SMTP configurado (solo en desarrollo) el codigo se muestra en la consola para poder probar.
     if (!smtpConfigurado()) {
-        if (process.env.NODE_ENV === 'production') {
-            throw new Error('No hay servidor de correo (SMTP) configurado en el .env');
-        }
         console.warn(`[DESARROLLO] SMTP sin configurar. Código para ${destinatario}: ${codigo}`);
         return;
     }
@@ -46,7 +50,7 @@ async function enviarCodigoRecuperacion(destinatario, nombre, codigo, minutosVig
     const nombreSeguro = escaparHtml(nombre || 'usuario');
 
     await obtenerTransporte().sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        from: SMTP_CONFIG.from,
         to: destinatario,
         subject: 'Código para recuperar tu contraseña - Servicio Social TecNM Culiacán',
         text:

@@ -1,7 +1,7 @@
 // Recuperacion de contrasena con codigo enviado al correo institucional.
-// Usa los procedimientos almacenados que ya existen en la BD (sp_ValidarLogin,
-// sp_ObtenerContrasena, sp_CambiarContrasena y sp_RegistrarBitacora), de modo que
-// funciona con los permisos actuales del usuario de aplicacion sin requerir CREATE TABLE.
+// Guarda y verifica el estado del codigo directamente en Azure SQL (bitacora_logs),
+// de modo que si el codigo se solicita en un servidor (ej. Codespace) y se verifica
+// en otro (ej. Render o PC local), ambos comparten exactamente el mismo codigo.
 //
 // Flujo:
 //   1. POST /api/recuperar-contrasena/solicitar    { correo }
@@ -12,7 +12,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { sql, getPool } = require('../db');
 const { responderErrorSql } = require('../errores');
-const { enviarCodigoRecuperacion } = require('../correo');
+const correoModulo = require('../correo');
 const { esCorreoInstitucional, cumplePolitica, MENSAJE_POLITICA, DOMINIO } = require('../validaciones');
 
 const router = express.Router();
@@ -21,17 +21,19 @@ const router = express.Router();
 const DIGITOS_CODIGO = 6;
 const MINUTOS_VIGENCIA = 15;   // el codigo vence a los 15 minutos
 const MAXIMO_INTENTOS = 5;     // intentos para escribir el codigo antes de que deje de servir
-const SEGUNDOS_ESPERA = 60;    // tiempo minimo entre una solicitud y otra
-const MAXIMO_POR_HORA = 5;     // solicitudes de codigo por hora por usuario
+const SEGUNDOS_ESPERA = 30;    // tiempo minimo entre una solicitud y otra
+const MAXIMO_POR_HORA = 10;    // solicitudes de codigo por hora por usuario
 
-// Siempre se responde lo mismo al solicitar, exista o no el correo,
-// para que nadie pueda averiguar que correos estan registrados.
+// Clave fija para el HMAC del codigo para que cualquier servidor calcule el mismo hash.
+const CLAVE_HMAC_CODIGO = 'recuperacion_ss_tecnm_culiacan_2026';
+
+// Acciones en bitacora_logs para sincronizar entre servidores sin requerir CREATE TABLE.
+const ACCION_GENERADO = 'Recuperacion: codigo generado';
+const ACCION_FALLIDO  = 'Recuperacion: intento fallido';
+const ACCION_USADO    = 'Recuperacion: contrasena restablecida';
+
 const MENSAJE_SOLICITUD = 'Si el correo está registrado, recibirás un código para restablecer tu contraseña. ' +
     `Revisa tu bandeja de entrada y la carpeta de spam. El código vence en ${MINUTOS_VIGENCIA} minutos.`;
-
-// Almacen en memoria de codigos activos por correo:
-// correo -> { id_usuario, codigoHash, expiraEn, intentos, usado, historialSolicitudes: [timestamps] }
-const codigosPorCorreo = new Map();
 
 // Codigo numerico aleatorio seguro (ej. "048213").
 function generarCodigo() {
@@ -41,7 +43,7 @@ function generarCodigo() {
 // El codigo nunca se guarda tal cual: se guarda su HMAC-SHA256 (64 caracteres hex).
 function hashCodigo(correo, codigo) {
     return crypto
-        .createHmac('sha256', process.env.CLAVE_SECRETA || 'servicio_social_tecnm_2026')
+        .createHmac('sha256', CLAVE_HMAC_CODIGO)
         .update(`${correo}:${codigo}`)
         .digest('hex');
 }
@@ -56,35 +58,75 @@ function leerCodigo(valor) {
     return new RegExp(`^\\d{${DIGITOS_CODIGO}}$`).test(codigo) ? codigo : null;
 }
 
-async function registrarBitacora(pool, idUsuario, detalles) {
-    try {
-        await pool.request()
-            .input('id_usuario', sql.Int, idUsuario)
-            .input('accion', sql.VarChar(255), 'Recuperacion de contrasena')
-            .input('detalles', sql.VarChar(sql.MAX), detalles)
-            .execute('sp_RegistrarBitacora');
-    } catch (err) {
-        console.error('No se pudo registrar en la bitacora:', err.message);
-    }
+async function registrarBitacora(pool, idUsuario, accion, detalles) {
+    await pool.request()
+        .input('id_usuario', sql.Int, idUsuario)
+        .input('accion', sql.VarChar(255), accion)
+        .input('detalles', sql.VarChar(sql.MAX), detalles)
+        .execute('sp_RegistrarBitacora');
 }
 
-// Revisa que el codigo sea valido y siga vigente.
-async function validarCodigoEnMemoria(pool, correo, codigo) {
-    const registro = codigosPorCorreo.get(correo);
-    const ahora = Date.now();
+// Consulta en Azure SQL el ultimo codigo vigente del usuario y cuantos intentos lleva.
+async function validarCodigoEnBD(pool, correo, codigo) {
+    const usuRes = await pool.request()
+        .input('correo', sql.VarChar(100), correo)
+        .execute('sp_ValidarLogin');
 
-    if (!registro || registro.usado || ahora >= registro.expiraEn || registro.intentos >= MAXIMO_INTENTOS) {
+    if (usuRes.recordset.length === 0) {
+        return { error: 'El código no es válido o ya expiró. Solicita uno nuevo' };
+    }
+
+    const usuario = usuRes.recordset[0];
+
+    // Busca el ultimo codigo generado en los ultimos 15 minutos (reloj del propio servidor SQL).
+    const codRes = await pool.request()
+        .input('id_usuario', sql.Int, usuario.id_usuario)
+        .input('minutos', sql.Int, MINUTOS_VIGENCIA)
+        .input('acc_gen', sql.VarChar(255), ACCION_GENERADO)
+        .input('acc_fallo', sql.VarChar(255), ACCION_FALLIDO)
+        .input('acc_usado', sql.VarChar(255), ACCION_USADO)
+        .query(`
+            declare @id_gen int, @hash_guardado varchar(max);
+
+            select top 1
+                @id_gen = id_log,
+                @hash_guardado = detalles
+            from bitacora_logs
+            where id_usuario = @id_usuario
+              and accion = @acc_gen
+              and fecha_hora_bl > dateadd(minute, -@minutos, getdate())
+            order by id_log desc;
+
+            if @id_gen is null
+            begin
+                select 0 as existe;
+                return;
+            end
+
+            declare @usado int = (
+                select count(*) from bitacora_logs
+                where id_usuario = @id_usuario and accion = @acc_usado and id_log > @id_gen
+            );
+
+            declare @intentos int = (
+                select count(*) from bitacora_logs
+                where id_usuario = @id_usuario and accion = @acc_fallo and id_log > @id_gen
+            );
+
+            select 1 as existe, @id_gen as id_gen, @hash_guardado as hash_guardado,
+                   @usado as usado, @intentos as intentos;
+        `);
+
+    const estado = codRes.recordset[0];
+    if (!estado || !estado.existe || estado.usado > 0 || estado.intentos >= MAXIMO_INTENTOS) {
         return { error: 'El código no es válido o ya expiró. Solicita uno nuevo' };
     }
 
     const hashRecibido = hashCodigo(correo, codigo);
-    if (registro.codigoHash !== hashRecibido) {
-        registro.intentos += 1;
-        if (registro.intentos >= MAXIMO_INTENTOS) {
-            registro.usado = true;
-        }
-        const restantes = MAXIMO_INTENTOS - registro.intentos;
-        await registrarBitacora(pool, registro.id_usuario, 'Se capturó un código de recuperación incorrecto');
+    if (String(estado.hash_guardado).trim() !== hashRecibido) {
+        const nuevosIntentos = estado.intentos + 1;
+        await registrarBitacora(pool, usuario.id_usuario, ACCION_FALLIDO, `Intento fallido #${nuevosIntentos}`);
+        const restantes = MAXIMO_INTENTOS - nuevosIntentos;
         return {
             error: restantes > 0
                 ? `El código es incorrecto. Te quedan ${restantes} intento(s)`
@@ -92,11 +134,11 @@ async function validarCodigoEnMemoria(pool, correo, codigo) {
         };
     }
 
-    return { registro };
+    return { usuario };
 }
 
 
-// 1. Pedir el codigo. Se manda por correo.
+// 1. Pedir el codigo. Se guarda su hash en Azure SQL y se manda por correo.
 router.post('/recuperar-contrasena/solicitar', async (req, res) => {
     const correo = leerCorreo(req.body && req.body.correo);
     if (!correo) {
@@ -109,39 +151,40 @@ router.post('/recuperar-contrasena/solicitar', async (req, res) => {
             .input('correo', sql.VarChar(100), correo)
             .execute('sp_ValidarLogin');
 
-        // Si el correo no existe o esta inactivo, respondemos igual sin hacer nada.
         if (consulta.recordset.length === 0) {
             return res.json({ success: true, mensaje: MENSAJE_SOLICITUD });
         }
 
         const usuario = consulta.recordset[0];
-        const ahora = Date.now();
-        const previo = codigosPorCorreo.get(correo);
-        const historial = (previo ? previo.historialSolicitudes : []).filter(t => ahora - t < 3600 * 1000);
-        const ultimaSolicitud = historial.length > 0 ? historial[historial.length - 1] : 0;
 
-        // Limite de 1 por minuto y 5 por hora.
-        if ((ahora - ultimaSolicitud < SEGUNDOS_ESPERA * 1000) || historial.length >= MAXIMO_POR_HORA) {
-            await registrarBitacora(pool, usuario.id_usuario, 'Solicitud de código rechazada por exceso de solicitudes');
+        // Revisa en la BD cuantas veces ha pedido codigo en el ultimo minuto / hora.
+        const limRes = await pool.request()
+            .input('id_usuario', sql.Int, usuario.id_usuario)
+            .input('acc_gen', sql.VarChar(255), ACCION_GENERADO)
+            .input('seg_espera', sql.Int, SEGUNDOS_ESPERA)
+            .query(`
+                select
+                    sum(case when fecha_hora_bl > dateadd(second, -@seg_espera, getdate()) then 1 else 0 end) as recientes,
+                    count(*) as en_hora
+                from bitacora_logs
+                where id_usuario = @id_usuario
+                  and accion = @acc_gen
+                  and fecha_hora_bl > dateadd(hour, -1, getdate());
+            `);
+
+        const { recientes, en_hora } = limRes.recordset[0];
+        if ((recientes || 0) > 0 || (en_hora || 0) >= MAXIMO_POR_HORA) {
             return res.json({ success: true, mensaje: MENSAJE_SOLICITUD });
         }
 
         const codigo = generarCodigo();
-        historial.push(ahora);
+        await registrarBitacora(pool, usuario.id_usuario, ACCION_GENERADO, hashCodigo(correo, codigo));
 
-        codigosPorCorreo.set(correo, {
-            id_usuario: usuario.id_usuario,
-            codigoHash: hashCodigo(correo, codigo),
-            expiraEn: ahora + MINUTOS_VIGENCIA * 60 * 1000,
-            intentos: 0,
-            usado: false,
-            historialSolicitudes: historial
-        });
-
-        await registrarBitacora(pool, usuario.id_usuario, 'Se generó un código de recuperación');
-
-        enviarCodigoRecuperacion(correo, usuario.nombre_completo, codigo, MINUTOS_VIGENCIA)
-            .catch((errCorreo) => console.error('No se pudo enviar el correo de recuperación:', errCorreo.message));
+        try {
+            await correoModulo.enviarCodigoRecuperacion(correo, usuario.nombre_completo, codigo, MINUTOS_VIGENCIA);
+        } catch (errCorreo) {
+            console.error('No se pudo enviar el correo de recuperación:', errCorreo.message);
+        }
 
         res.json({ success: true, mensaje: MENSAJE_SOLICITUD });
     } catch (err) {
@@ -164,7 +207,7 @@ router.post('/recuperar-contrasena/verificar', async (req, res) => {
 
     try {
         const pool = await getPool();
-        const { error } = await validarCodigoEnMemoria(pool, correo, codigo);
+        const { error } = await validarCodigoEnBD(pool, correo, codigo);
         if (error) {
             return res.status(400).json({ success: false, mensaje: error });
         }
@@ -175,7 +218,7 @@ router.post('/recuperar-contrasena/verificar', async (req, res) => {
 });
 
 
-// 3. Cambiar la contrasena usando el codigo. Aqui el codigo se gasta.
+// 3. Cambiar la contrasena usando el codigo. Aqui el codigo se marca como usado en Azure SQL.
 router.post('/recuperar-contrasena/restablecer', async (req, res) => {
     const cuerpo = req.body || {};
     const correo = leerCorreo(cuerpo.correo);
@@ -200,14 +243,14 @@ router.post('/recuperar-contrasena/restablecer', async (req, res) => {
 
     try {
         const pool = await getPool();
-        const { error, registro } = await validarCodigoEnMemoria(pool, correo, codigo);
+        const { error, usuario } = await validarCodigoEnBD(pool, correo, codigo);
         if (error) {
             return res.status(400).json({ success: false, mensaje: error });
         }
 
         // La nueva no puede ser igual a la que ya tiene.
         const actual = await pool.request()
-            .input('id_usuario', sql.Int, registro.id_usuario)
+            .input('id_usuario', sql.Int, usuario.id_usuario)
             .execute('sp_ObtenerContrasena');
         if (await bcrypt.compare(String(nueva), actual.recordset[0].contrausu)) {
             return res.status(400).json({ success: false, mensaje: 'La nueva contraseña debe ser diferente a la actual' });
@@ -215,12 +258,11 @@ router.post('/recuperar-contrasena/restablecer', async (req, res) => {
 
         const nuevaCifrada = await bcrypt.hash(nueva, 10);
         await pool.request()
-            .input('id_usuario', sql.Int, registro.id_usuario)
+            .input('id_usuario', sql.Int, usuario.id_usuario)
             .input('hash', sql.VarChar(255), nuevaCifrada)
             .execute('sp_CambiarContrasena');
 
-        registro.usado = true;
-        await registrarBitacora(pool, registro.id_usuario, 'La contraseña se restableció con código de recuperación');
+        await registrarBitacora(pool, usuario.id_usuario, ACCION_USADO, 'La contraseña se restableció con código de recuperación');
 
         res.json({ success: true, mensaje: 'Contraseña restablecida correctamente. Ya puedes iniciar sesión' });
     } catch (err) {
