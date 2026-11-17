@@ -147,4 +147,243 @@ router.get('/bitacora', verificarSesion, soloAdministrador, async (req, res) => 
     }
 });
 
+// ---------------------------------------------------------------------
+// CU13 / RF-13: Administrar periodos escolares (solo Administrador)
+// ---------------------------------------------------------------------
+
+const SQL_LISTAR_PERIODOS_ADMIN = `
+    select p.id_periodo,
+           p.nombre_periodo,
+           p.fecha_inicio_pe as fecha_inicio,
+           p.fecha_fin_pe as fecha_fin,
+           p.estatus_activo_pe as activo,
+           (select count(*) from expedientes x where x.id_periodo = p.id_periodo) as expedientes,
+           (select count(*) from programas_ss pr where pr.id_periodo = p.id_periodo) as programas,
+           c1.fecha_inicio_cr as b1_inicio, c1.fecha_limite_cr as b1_limite,
+           c2.fecha_inicio_cr as b2_inicio, c2.fecha_limite_cr as b2_limite,
+           c3.fecha_inicio_cr as b3_inicio, c3.fecha_limite_cr as b3_limite
+    from periodos_escolares p
+    left join calendario_reportes c1 on c1.id_periodo = p.id_periodo and c1.numero_bimestre = 1
+    left join calendario_reportes c2 on c2.id_periodo = p.id_periodo and c2.numero_bimestre = 2
+    left join calendario_reportes c3 on c3.id_periodo = p.id_periodo and c3.numero_bimestre = 3
+    order by p.estatus_activo_pe desc, p.fecha_inicio_pe desc, p.id_periodo desc;
+`;
+
+const SQL_GUARDAR_PERIODO = `
+    set nocount on;
+    set xact_abort on;
+
+    if @id_periodo is not null and not exists (select 1 from periodos_escolares where id_periodo = @id_periodo)
+        throw 50404, N'El periodo escolar no existe', 1;
+
+    if exists (
+        select 1 from periodos_escolares
+        where lower(nombre_periodo) = lower(@nombre)
+          and (@id_periodo is null or id_periodo <> @id_periodo)
+    )
+        throw 50409, N'Ya existe un periodo escolar con ese nombre', 1;
+
+    declare @otro_activo_id int, @otro_activo_nombre varchar(50);
+    select top 1 @otro_activo_id = id_periodo, @otro_activo_nombre = nombre_periodo
+    from periodos_escolares
+    where estatus_activo_pe = 1
+      and (@id_periodo is null or id_periodo <> @id_periodo);
+
+    if @activo = 1 and @otro_activo_id is not null and isnull(@confirmar, 0) = 0
+    begin
+        select 'confirmar' as estado, @otro_activo_nombre as periodo_actual;
+        return;
+    end
+
+    begin try
+        begin tran;
+
+            if @activo = 1 and @otro_activo_id is not null
+            begin
+                update periodos_escolares
+                set estatus_activo_pe = 0
+                where estatus_activo_pe = 1
+                  and (@id_periodo is null or id_periodo <> @id_periodo);
+            end
+
+            declare @es_nuevo bit = 0;
+            if @id_periodo is null
+            begin
+                set @es_nuevo = 1;
+                insert into periodos_escolares (nombre_periodo, fecha_inicio_pe, fecha_fin_pe, estatus_activo_pe)
+                values (@nombre, @fecha_inicio, @fecha_fin, @activo);
+
+                set @id_periodo = scope_identity();
+            end
+            else
+            begin
+                update periodos_escolares
+                set nombre_periodo = @nombre,
+                    fecha_inicio_pe = @fecha_inicio,
+                    fecha_fin_pe = @fecha_fin,
+                    estatus_activo_pe = @activo
+                where id_periodo = @id_periodo;
+            end
+
+            declare @b int = 1;
+            while @b <= 3
+            begin
+                declare @ini_b date = dateadd(month, 2 * (@b - 1), @fecha_inicio);
+                declare @lim_b date = dateadd(day, 7, dateadd(month, 2 * @b, @fecha_inicio));
+
+                if exists (select 1 from calendario_reportes where id_periodo = @id_periodo and numero_bimestre = @b)
+                begin
+                    update calendario_reportes
+                    set fecha_inicio_cr = @ini_b,
+                        fecha_limite_cr = @lim_b
+                    where id_periodo = @id_periodo and numero_bimestre = @b;
+                end
+                else
+                begin
+                    insert into calendario_reportes (id_periodo, numero_bimestre, fecha_inicio_cr, fecha_limite_cr)
+                    values (@id_periodo, @b, @ini_b, @lim_b);
+                end
+
+                set @b = @b + 1;
+            end
+
+            insert into bitacora_logs (id_usuario, accion, detalles)
+            values (
+                @id_admin,
+                case when @es_nuevo = 1 then 'Alta de periodo escolar' else 'Actualizacion de periodo escolar' end,
+                concat('Periodo ', @nombre, ' (', convert(varchar(10), @fecha_inicio, 23), ' a ',
+                       convert(varchar(10), @fecha_fin, 23), ') - ',
+                       case when @activo = 1 then 'Activo' else 'Inactivo' end)
+            );
+
+        commit tran;
+
+        select 'ok' as estado, @id_periodo as id_periodo;
+    end try
+    begin catch
+        if @@trancount > 0 rollback tran;
+        throw;
+    end catch
+`;
+
+function validarCuerpoPeriodo(cuerpo) {
+    const nombre = typeof cuerpo?.nombre === 'string' ? cuerpo.nombre.trim() : '';
+    const fechaInicio = typeof cuerpo?.fecha_inicio === 'string' ? cuerpo.fecha_inicio.trim() : '';
+    const fechaFin = typeof cuerpo?.fecha_fin === 'string' ? cuerpo.fecha_fin.trim() : '';
+    const activo = cuerpo?.activo === true || cuerpo?.activo === 1 || cuerpo?.activo === '1' || cuerpo?.activo === 'true';
+    const confirmar = Boolean(cuerpo?.confirmar_cambio_activo);
+
+    if (!esTextoValido(nombre, 50) || !fechaInicio || !fechaFin) {
+        return { error: 'Todos los campos del periodo escolar son obligatorios' };
+    }
+    if (!esFechaValida(fechaInicio) || !esFechaValida(fechaFin)) {
+        return { error: 'Las fechas de inicio y término deben tener un formato válido (AAAA-MM-DD)' };
+    }
+    if (fechaFin <= fechaInicio) {
+        return { error: 'La fecha de término debe ser posterior a la fecha de inicio' };
+    }
+
+    return {
+        datos: {
+            nombre,
+            fechaInicio: new Date(fechaInicio + 'T00:00:00Z'),
+            fechaFin: new Date(fechaFin + 'T00:00:00Z'),
+            activo: activo ? 1 : 0,
+            confirmar: confirmar ? 1 : 0
+        }
+    };
+}
+
+// Lista todos los periodos con sus 3 bimestres calculados.
+router.get('/periodos', verificarSesion, soloAdministrador, async (req, res) => {
+    try {
+        const pool = await getPool();
+        const resultado = await pool.request().query(SQL_LISTAR_PERIODOS_ADMIN);
+        res.json(resultado.recordset);
+    } catch (err) {
+        responderErrorSql(res, err, 'Error al obtener periodos escolares');
+    }
+});
+
+// Registra un nuevo periodo escolar y calcula sus 3 reportes bimestrales.
+router.post('/periodos', verificarSesion, soloAdministrador, async (req, res) => {
+    const { error, datos } = validarCuerpoPeriodo(req.body);
+    if (error) {
+        return res.status(400).json({ success: false, mensaje: error });
+    }
+
+    try {
+        const pool = await getPool();
+        const r = await pool.request()
+            .input('id_periodo', sql.Int, null)
+            .input('nombre', sql.VarChar(50), datos.nombre)
+            .input('fecha_inicio', sql.Date, datos.fechaInicio)
+            .input('fecha_fin', sql.Date, datos.fechaFin)
+            .input('activo', sql.Bit, datos.activo)
+            .input('confirmar', sql.Bit, datos.confirmar)
+            .input('id_admin', sql.Int, req.usuario.id_usuario)
+            .query(SQL_GUARDAR_PERIODO);
+
+        const fila = r.recordset[0];
+        if (fila.estado === 'confirmar') {
+            return res.status(409).json({
+                success: false,
+                requiereConfirmacion: true,
+                periodoActual: fila.periodo_actual,
+                mensaje: `El periodo "${fila.periodo_actual}" está actualmente como Activo. ¿Deseas cerrarlo y dejar únicamente "${datos.nombre}" como Activo?`
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            id_periodo: fila.id_periodo,
+            mensaje: 'Periodo escolar guardado y configurado correctamente'
+        });
+    } catch (err) {
+        responderErrorSql(res, err, 'Error al registrar periodo escolar');
+    }
+});
+
+// Actualiza un periodo escolar existente y recalcula sus 3 reportes bimestrales.
+router.put('/periodos/:id', verificarSesion, soloAdministrador, async (req, res) => {
+    if (!esIdValido(req.params.id)) {
+        return res.status(400).json({ success: false, mensaje: 'El id del periodo no es válido' });
+    }
+    const { error, datos } = validarCuerpoPeriodo(req.body);
+    if (error) {
+        return res.status(400).json({ success: false, mensaje: error });
+    }
+
+    try {
+        const pool = await getPool();
+        const r = await pool.request()
+            .input('id_periodo', sql.Int, Number(req.params.id))
+            .input('nombre', sql.VarChar(50), datos.nombre)
+            .input('fecha_inicio', sql.Date, datos.fechaInicio)
+            .input('fecha_fin', sql.Date, datos.fechaFin)
+            .input('activo', sql.Bit, datos.activo)
+            .input('confirmar', sql.Bit, datos.confirmar)
+            .input('id_admin', sql.Int, req.usuario.id_usuario)
+            .query(SQL_GUARDAR_PERIODO);
+
+        const fila = r.recordset[0];
+        if (fila.estado === 'confirmar') {
+            return res.status(409).json({
+                success: false,
+                requiereConfirmacion: true,
+                periodoActual: fila.periodo_actual,
+                mensaje: `El periodo "${fila.periodo_actual}" está actualmente como Activo. ¿Deseas cerrarlo y dejar únicamente "${datos.nombre}" como Activo?`
+            });
+        }
+
+        res.json({
+            success: true,
+            id_periodo: fila.id_periodo,
+            mensaje: 'Periodo escolar guardado y configurado correctamente'
+        });
+    } catch (err) {
+        responderErrorSql(res, err, 'Error al actualizar periodo escolar');
+    }
+});
+
 module.exports = router

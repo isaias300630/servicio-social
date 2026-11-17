@@ -24,6 +24,9 @@ function obtenerTransporte() {
             host: SMTP_CONFIG.host,
             port: SMTP_CONFIG.port,
             secure: SMTP_CONFIG.port === 465, // 465 = SSL directo; 587 = STARTTLS
+            connectionTimeout: 8000,
+            greetingTimeout: 8000,
+            socketTimeout: 10000,
             auth: {
                 user: SMTP_CONFIG.user,
                 pass: SMTP_CONFIG.pass

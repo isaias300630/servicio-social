@@ -180,11 +180,9 @@ router.post('/recuperar-contrasena/solicitar', async (req, res) => {
         const codigo = generarCodigo();
         await registrarBitacora(pool, usuario.id_usuario, ACCION_GENERADO, hashCodigo(correo, codigo));
 
-        try {
-            await correoModulo.enviarCodigoRecuperacion(correo, usuario.nombre_completo, codigo, MINUTOS_VIGENCIA);
-        } catch (errCorreo) {
-            console.error('No se pudo enviar el correo de recuperación:', errCorreo.message);
-        }
+        // Se envia en segundo plano para responder de inmediato y pasar al paso 2 sin bloquear la pantalla.
+        correoModulo.enviarCodigoRecuperacion(correo, usuario.nombre_completo, codigo, MINUTOS_VIGENCIA)
+            .catch((errCorreo) => console.error('No se pudo enviar el correo de recuperación:', errCorreo.message));
 
         res.json({ success: true, mensaje: MENSAJE_SOLICITUD });
     } catch (err) {
