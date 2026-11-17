@@ -120,6 +120,22 @@ Requiere correr `sql/07_validar_documentos.sql`. Rutas para el **Jefe de Oficina
 Reglas: solo se validan documentos pendientes (409 si ya se validó); al rechazar, el comentario es obligatorio y el alumno lo ve
 para subir una nueva versión; al aceptar el kárdex del plan anterior se guarda el porcentaje de créditos (0 a 100); todo queda en la bitácora.
 
+## Periodos escolares (CU13)
+
+Solo lo puede usar el **Administrador del Sistema**. Pantalla: `periodos.html` (desde el módulo **Periodos escolares** de `admin.html`).
+También se incluye el script `sql/09_periodos_escolares.sql`.
+
+| Método y ruta | Cuerpo (JSON) |
+|---|---|
+| `GET /api/admin/periodos` | — |
+| `POST /api/admin/periodos` | `{ "nombre": "Ago-Dic 2027", "fecha_inicio": "2027-08-16", "fecha_fin": "2027-12-10", "activo": false, "confirmar_cambio_activo": false }` |
+| `PUT /api/admin/periodos/:id` | `{ "nombre": "...", "fecha_inicio": "AAAA-MM-DD", "fecha_fin": "AAAA-MM-DD", "activo": true, "confirmar_cambio_activo": true }` |
+
+Reglas:
+- Valida que todos los campos estén completos y que `fecha_fin > fecha_inicio`.
+- Solo permite un periodo con estatus `Activo` a la vez; si ya hay otro activo, responde `409` con `requiereConfirmacion: true` para que el Administrador confirme desactivar el anterior.
+- Calcula y guarda automáticamente las fechas de inicio y límite de los **3 reportes bimestrales** en `calendario_reportes` y registra el movimiento en `bitacora_logs`.
+
 ## Pendientes (lo que falta por hacer)
 - `registro.html` y `dashboard_jefe.html` (el login ya redirige a ellos).
 - Subida de archivos PDF con `multer` hacia la carpeta `uploads/` o Azure Blob Storage.

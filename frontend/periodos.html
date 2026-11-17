@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Periodos Escolares | TecNM Campus Culiacán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <header class="header-institucional">
+        <div class="header-institucional__contenedor">
+            <div class="header-institucional__identidad">
+                <div class="header-institucional__escudo">
+                    TecNM
+                    <span>ITC</span>
+                </div>
+                <div class="header-institucional__titulos">
+                    <h2>Tecnológico Nacional de México</h2>
+                    <p>Instituto Tecnológico de Culiacán — Oficina de Servicio Social</p>
+                </div>
+            </div>
+            <div class="header-institucional__badge">
+                Administración del Sistema
+            </div>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol">Periodos escolares (CU13)</p>
+                <h1 class="encabezado__nombre">Registrar y actualizar periodos</h1>
+                <p class="encabezado__periodo">Define las fechas oficiales de inicio y término; el sistema calcula automáticamente los plazos de los 3 reportes bimestrales.</p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="admin.html" class="boton boton-outline">Volver al panel</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Formulario de captura / edicion -->
+        <section class="tarjeta" id="seccionFormulario">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo" id="tituloFormulario">Registrar nuevo periodo escolar</h2>
+            </div>
+
+            <form id="formPeriodo">
+                <input type="hidden" id="idPeriodo">
+
+                <div class="form-alta">
+                    <div class="campo">
+                        <label for="nombre">Nombre o código del periodo</label>
+                        <input type="text" id="nombre" maxlength="50" placeholder="Ej. Ene-Jun 2027, Ago-Dic 2027" required>
+                    </div>
+                    <div class="campo">
+                        <label for="estatus">Estatus del periodo</label>
+                        <select id="estatus" required>
+                            <option value="0">Inactivo / En preparación</option>
+                            <option value="1">Activo (periodo vigente)</option>
+                        </select>
+                        <small>Solo puede haber un periodo escolar con estatus Activo a la vez.</small>
+                    </div>
+                    <div class="campo">
+                        <label for="fechaInicio">Fecha oficial de inicio</label>
+                        <input type="date" id="fechaInicio" required>
+                    </div>
+                    <div class="campo">
+                        <label for="fechaFin">Fecha oficial de término</label>
+                        <input type="date" id="fechaFin" required>
+                    </div>
+                </div>
+
+                <!-- Vista previa automatica de las 3 ventanas de reportes bimestrales -->
+                <div id="vistaPreviaBimestres" hidden style="margin-top: 1.8rem;">
+                    <p style="font-size: 1.35rem; font-weight: 600; color: var(--tecnm-azul); margin-bottom: 1rem;">
+                        Calendario calculado automáticamente para los reportes bimestrales:
+                    </p>
+                    <div class="resumen" id="tarjetasBimestres" style="margin-bottom: 0;"></div>
+                </div>
+
+                <div class="filtros__botones">
+                    <button type="submit" class="boton" id="btnGuardar">Guardar periodo</button>
+                    <button type="button" class="boton boton-gris" id="btnCancelar" hidden>Cancelar edición</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Tabla de periodos registrados -->
+        <section class="tarjeta">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Periodos escolares registrados</h2>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla-bitacora">
+                    <thead>
+                        <tr>
+                            <th>Periodo</th>
+                            <th>Inicio — Término</th>
+                            <th>Estatus</th>
+                            <th>Bimestre 1</th>
+                            <th>Bimestre 2</th>
+                            <th>Bimestre 3</th>
+                            <th>Registros</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoPeriodos">
+                        <tr><td colspan="8" class="vacio">Cargando periodos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-tecnm">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/periodos.js"></script>
+</body>
+</html>
