@@ -21,6 +21,7 @@ let pendientes = [];
 // El Jefe de Vinculacion no tiene panel
 document.getElementById('rol').textContent = usuario.rol || '';
 document.getElementById('volverPanel').hidden = usuario.rol !== 'Jefe de Oficina de SS';
+document.getElementById('irConstancias').hidden = usuario.rol !== 'Jefe de Vinculacion';
 
 // Evita que un texto se interprete como HTML.
 function escapar(texto) {

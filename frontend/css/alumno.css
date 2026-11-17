@@ -444,3 +444,18 @@
         flex: 1;
     }
 }
+/* Aviso de constancia emitida */
+.aviso-constancia {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    border-left: 5px solid var(--exito);
+    background-color: #F1F9F4;
+}
+
+.aviso-constancia .subtitulo {
+    color: var(--exito);
+    margin-bottom: 0.4rem;
+}

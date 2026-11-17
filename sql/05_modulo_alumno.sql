@@ -1,5 +1,6 @@
--- Modulo del alumno: datos de contacto, solicitud de programa y entrega de documentos PDF.
--- Correr despues de 01 a 04. Se puede volver a correr completo.
+-- Modulo del alumno: datos de contacto, solicitud de programa
+--y entrega de documentos PDF.
+
 
 
 -- El PDF se guarda dentro de la base para que no se pierda al reiniciar el servidor.
@@ -7,8 +8,7 @@ if col_length('documentos', 'contenido_pdf') is null
     alter table documentos add contenido_pdf varbinary(max) null;
 go
 
--- Fechas de los 3 reportes bimestrales: cada uno se recibe durante su bimestre y 7 dias despues
--- (esos 7 dias se enciman a proposito con el inicio del siguiente bimestre).
+-- Fechas de los 3 reportes bimestrales: cada uno se recibe durante su bimestre y 7 dias despues.
 insert into calendario_reportes (id_periodo, numero_bimestre, fecha_inicio_cr, fecha_limite_cr)
 select p.id_periodo, b.numero,
        dateadd(month, 2 * (b.numero - 1), p.fecha_inicio_pe),
@@ -18,9 +18,8 @@ cross join (values (1), (2), (3)) as b(numero)
 where not exists (select 1 from calendario_reportes c where c.id_periodo = p.id_periodo);
 go
 
--- Un alumno solo puede tener un servicio activo (lo cuida la base aunque lleguen dos clics al mismo tiempo).
-if not exists (select 1 from sys.indexes where name = 'ux_expediente_activo')
-    create unique index ux_expediente_activo on expedientes (numero_control) where estatus_ex = 'activo';
+-- Los alumnos que llenaron el formulario del curso ya tienen la induccion completa.
+update estudiantes set induccion_completa = 1 where isnull(induccion_completa, 0) = 0;
 go
 
 
@@ -34,9 +33,6 @@ begin
     declare @numero_control varchar(20) = (select numero_control from estudiantes where id_usuario = @id_usuario);
     if @numero_control is null
         throw 50404, N'Alumno no encontrado', 1;
-
-    -- Azure trabaja en hora UTC; Culiacan es UTC-7 todo el año (Sinaloa no tiene horario de verano).
-    declare @hoy date = cast(dateadd(hour, -7, getutcdate()) as date);
 
     declare @id_expediente int = (select top 1 id_expediente from expedientes
                                   where numero_control = @numero_control and estatus_ex = 'activo');
@@ -65,11 +61,18 @@ begin
 
     -- 4. Fechas de los reportes del periodo activo
     select c.numero_bimestre, c.fecha_inicio_cr as inicio, c.fecha_limite_cr as limite,
-           case when @hoy between c.fecha_inicio_cr and c.fecha_limite_cr then 1 else 0 end as abierto
+           case when cast(getdate() as date) between c.fecha_inicio_cr and c.fecha_limite_cr then 1 else 0 end as abierto
     from calendario_reportes c
     inner join periodos_escolares pe on c.id_periodo = pe.id_periodo
     where pe.estatus_activo_pe = 1;
+
+	
+    -- 5. Su constancia de terminacion (si Vinculacion ya se la envio en PDF)
+    select id_constancia, folio_unico as folio, fecha_emision_ct as fecha, archivo_pdf as nombre_archivo
+    from constancias_terminacion
+    where id_expediente = @id_expediente;
 end
+
 go
 
 -- Guarda telefono, domicilio y direccion.
@@ -91,7 +94,7 @@ begin
 end
 go
 
--- Programas aprobados del periodo activo, con lugares y de su plan (o sin plan especificado).
+-- Programas aprobados del periodo activo, 
 create or alter procedure sp_ProgramasDisponibles
     @id_usuario int
 as
@@ -149,7 +152,7 @@ begin
                 throw 50409, N'El programa ya no tiene lugares disponibles', 1;
 
             insert into expedientes (numero_control, id_programa, id_periodo, fechainicio_ex, estatus_ex)
-            values (@numero_control, @id_programa, @id_periodo, dateadd(hour, -7, getutcdate()), 'activo');
+            values (@numero_control, @id_programa, @id_periodo, getdate(), 'activo');
 
             insert into bitacora_logs (id_usuario, accion, detalles)
             values (@id_usuario, 'Solicitud de programa', 'Programa #' + cast(@id_programa as varchar(10)));
@@ -157,8 +160,6 @@ begin
     end try
     begin catch
         if @@trancount > 0 rollback tran;
-        if error_number() in (2601, 2627)
-            throw 50409, N'Ya cuentas con un servicio social activo', 1;
         throw;
     end catch
 end
@@ -202,16 +203,19 @@ begin
     if @estatus in ('pendiente', 'aceptado')
         throw 50409, N'Este documento ya está en revisión o ya fue aceptado', 1;
 
-    -- Los reportes bimestrales solo se reciben dentro de sus fechas.
-    if @tipo like 'reporte_bimestral_%'
-       and not exists (select 1 from calendario_reportes
-                       where id_periodo = @id_periodo
-                         and numero_bimestre = cast(right(@tipo, 1) as int)
-                         and cast(dateadd(hour, -7, getutcdate()) as date) between fecha_inicio_cr and fecha_limite_cr)
+
+    -- Los reportes bimestrales van en orden: el 2 se sube cuando el 1 ya se entrego, y el 3 despues del 2.
+       -- Los reportes bimestrales van en orden: el 2 se sube cuando el 1 ya se entrego, y el 3 despues del 2.
+    -- "Entregado" = en revision o aceptado (si el anterior lo rechazaron, primero se corrige ese).
+    if @tipo in ('reporte_bimestral_2', 'reporte_bimestral_3')
     begin
-        insert into bitacora_logs (id_usuario, accion, detalles)
-        values (@id_usuario, 'Reporte fuera de fecha', @tipo);
-        throw 50400, N'El reporte está fuera de su periodo de entrega', 1;
+        declare @anterior varchar(50) = 'reporte_bimestral_' + cast(cast(right(@tipo, 1) as int) - 1 as varchar(1));
+
+        if not exists (select 1 from documentos
+                       where id_expediente = @id_expediente
+                         and tipo_documento = @anterior
+                         and estatus_validacion_do in ('pendiente', 'aceptado'))
+            throw 50400, N'Primero entrega el reporte bimestral anterior', 1;
     end
 
     set @version = isnull(@version, 0) + 1;

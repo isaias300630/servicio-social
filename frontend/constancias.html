@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constancias de Terminación | TecNM Campus Culiacán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/constancias.css">
+</head>
+<body>
+
+    <header class="header-institucional">
+        <div class="header-institucional__contenedor">
+            <div class="header-institucional__identidad">
+                <div class="header-institucional__escudo">
+                    TecNM
+                    <span>ITC</span>
+                </div>
+                <div class="header-institucional__titulos">
+                    <h2>Tecnológico Nacional de México</h2>
+                    <p>Instituto Tecnológico de Culiacán — Oficina de Servicio Social</p>
+                </div>
+            </div>
+            <div class="header-institucional__badge">
+                Gestión Tecnológica y Vinculación
+            </div>
+        </div>
+    </header>
+
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol">Jefe de Vinculación</p>
+                <h1 class="encabezado__nombre">Constancias de terminación</h1>
+                <p class="encabezado__periodo">Sube la constancia firmada en PDF cuando el alumno tenga aceptados sus reportes 1, 2 y 3 y su carta de terminación.</p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="validar.html" class="boton boton-outline">Validar documentos</a>
+                <a href="cuenta.html" class="boton boton-outline">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <section class="resumen">
+            <div class="dato">
+                <span class="dato__numero" id="totalActivos">–</span>
+                <span class="dato__texto">Servicios activos</span>
+            </div>
+            <div class="dato dato--pendiente">
+                <span class="dato__numero" id="totalListos">–</span>
+                <span class="dato__texto">Listos para recibir constancia</span>
+            </div>
+            <div class="dato dato--aprobado">
+                <span class="dato__numero" id="totalEmitidas">–</span>
+                <span class="dato__texto">Constancias enviadas</span>
+            </div>
+        </section>
+
+        <section class="tarjeta">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Alumnos con servicio activo</h2>
+                <div class="filtros-constancias">
+                    <select id="filtro">
+                        <option value="todos">Todos</option>
+                        <option value="listos">Listos para recibir constancia</option>
+                        <option value="faltan">Les faltan requisitos</option>
+                        <option value="emitidas">Con constancia</option>
+                    </select>
+                    <input type="search" id="buscar" placeholder="Buscar alumno o número de control">
+                </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla-constancias">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Programa</th>
+                            <th>Requisitos</th>
+                            <th>Constancia</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                        <tr><td colspan="4">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <input type="file" id="archivoConstancia" accept=".pdf,application/pdf" hidden>
+
+            <p class="leyenda">
+                <span class="requisito requisito--aceptado">Aceptado</span>
+                <span class="requisito requisito--pendiente">En revisión</span>
+                <span class="requisito requisito--rechazado">Rechazado</span>
+                <span class="requisito">Sin entregar</span>
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer-tecnm">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/constancias.js"></script>
+</body>
+</html>

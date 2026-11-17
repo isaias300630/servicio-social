@@ -36,7 +36,8 @@ router.get('/alumno/panel', async (req, res) => {
             alumno: r.recordsets[0][0],
             programa: r.recordsets[1][0] || null,
             documentos: r.recordsets[2],
-            calendario: r.recordsets[3]
+            calendario: r.recordsets[3],
+            constancia: (r.recordsets[4] && r.recordsets[4][0]) || null
         });
     } catch (err) {
         responderErrorSql(res, err, 'Error al cargar el panel');
@@ -103,7 +104,6 @@ router.post('/alumno/solicitud', async (req, res) => {
 
 // Sube un PDF. Llega como formulario con los campos "tipo" y "archivo".
 router.post('/alumno/documentos', (req, res) => {
-    // Si ya hay muchas subidas al mismo tiempo, se le pide esperar.
     if (subidasEnCurso >= MAXIMO_SUBIDAS) {
         return res.status(503).json({ success: false, mensaje: 'Hay muchas subidas en este momento, intenta de nuevo en unos segundos' });
     }
@@ -113,7 +113,7 @@ router.post('/alumno/documentos', (req, res) => {
     subida(req, res, async (errSubida) => {
         const archivo = req.file;
 
-        // Pasa de 5 MB, no es .pdf o no empieza con "%PDF" (asi empiezan todos los PDF reales).
+        // Pasa de 5 MB, no es .pdf o no empieza con "%PDF"
         if (errSubida || !archivo || !archivo.originalname.toLowerCase().endsWith('.pdf')
             || archivo.buffer.subarray(0, 4).toString() !== '%PDF') {
             return res.status(400).json({ success: false, mensaje: MENSAJE_PDF });

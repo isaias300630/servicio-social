@@ -48,6 +48,15 @@
         <!-- Avance del trámite -->
         <ol class="avance" id="avance"></ol>
 
+        <!-- Constancia de terminacion (aparece cuando el Jefe de Vinculacion sube el PDF) -->
+        <section class="tarjeta aviso-constancia" id="seccionConstancia" hidden>
+            <div>
+                <h2 class="subtitulo">¡Concluiste tu Servicio Social!</h2>
+                <p id="textoConstancia"></p>
+            </div>
+            <button type="button" class="boton" id="verConstancia">Descargar constancia</button>
+        </section>
+
         <!-- Programa del alumno o lista para elegir uno -->
         <section class="tarjeta" id="seccionPrograma">
             <div class="cabecera-seccion">
@@ -67,7 +76,6 @@
             <input type="file" id="archivo" accept=".pdf" hidden>
         </section>
 
-        <!-- Datos de contacto -->
         <section class="tarjeta">
             <div class="cabecera-seccion">
                 <h2 class="subtitulo">Mis Datos de Contacto</h2>
@@ -92,7 +100,7 @@
         </section>
     </main>
 
-    <!-- Pie de Página Oficial -->
+
     <footer class="footer-tecnm">
         <div class="footer-tecnm__contenedor">
             <div>

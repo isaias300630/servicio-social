@@ -60,25 +60,46 @@ async function cargarPanel() {
     // Si es plan nuevo, se quita el kardex de la lista.
     const lista = DOCUMENTOS.filter(d => !d.soloPlanViejo || a.plan_estudios === 'Plan Viejo');
 
-    mostrarAvance(a, datos.programa, lista, datos.documentos);
+    mostrarAvance(a, datos.programa, lista, datos.documentos, datos.constancia);
+    mostrarConstancia(datos.constancia);
     mostrarPrograma(a, datos.programa);
     mostrarDocumentos(lista, datos);
 }
 
-// Pasos del tramite: induccion, programa, documentos y liberacion.
-function mostrarAvance(alumno, programa, lista, documentos) {
+// Pasos del tramite: induccion, programa, documentos y liberacion (constancia).
+function mostrarAvance(alumno, programa, lista, documentos, constancia) {
     const aceptados = documentos.filter(d => d.estatus === 'aceptado').length;
     const pasos = [
         ['Curso de inducción', alumno.induccion_completa],
         ['Programa', programa],
         [`Documentos (${aceptados} de ${lista.length})`, aceptados === lista.length],
-        ['Liberación', false]
+        ['Liberación', Boolean(constancia)]
     ];
     document.getElementById('avance').innerHTML = pasos.map(([nombre, listo], i) => `
         <li class="avance__paso ${listo ? 'avance__paso--listo' : ''}">
             <span class="avance__numero">${listo ? '✓' : i + 1}</span>
             <span class="avance__texto">${nombre}</span>
         </li>`).join('');
+}
+
+// Aviso cuando el Jefe de Vinculacion ya le envio su constancia en PDF.
+function mostrarConstancia(constancia) {
+    document.getElementById('seccionConstancia').hidden = !constancia;
+    if (!constancia) return;
+    document.getElementById('textoConstancia').textContent =
+        `El Departamento de Vinculación te envió tu constancia de terminación el ${fecha(constancia.fecha)} (folio ${constancia.folio}).`;
+    document.getElementById('verConstancia').onclick = () => descargarConstancia(constancia);
+}
+
+// Descarga el PDF de la constancia (se pide con el token).
+async function descargarConstancia(constancia) {
+    const respuesta = await pedir(`/api/constancias/${Number(constancia.id_constancia)}/pdf`);
+    if (!respuesta.ok) return alert((await respuesta.json()).mensaje);
+
+    const enlace = document.createElement('a');
+    enlace.href = URL.createObjectURL(await respuesta.blob());
+    enlace.download = constancia.nombre_archivo || `constancia_${constancia.folio}.pdf`;
+    enlace.click();
 }
 
 // Su programa, o la lista de programas para elegir uno.
@@ -132,10 +153,12 @@ function mostrarDocumentos(lista, datos) {
     document.getElementById('listaDocumentos').innerHTML = lista.map(d => {
         // La version mas nueva viene primero.
         const subido = datos.documentos.find(x => x.tipo_documento === d.tipo);
-        const fechas = datos.calendario.find(c => c.numero_bimestre === d.bimestre);
-
-        const abierto = !d.bimestre || (fechas && fechas.abierto);
-        const puedeSubir = datos.programa && abierto && (!subido || subido.estatus === 'rechazado');
+        // Los reportes van en orden: el 2 se habilita cuando el 1 ya se entrego (en revision o aceptado).
+        const anterior = d.bimestre > 1
+            ? datos.documentos.find(x => x.tipo_documento === 'reporte_bimestral_' + (d.bimestre - 1))
+            : null;
+        const enOrden = !(d.bimestre > 1) || (anterior && anterior.estatus !== 'rechazado');
+        const puedeSubir = datos.programa && enOrden && (!subido || subido.estatus === 'rechazado');
 
         return `
             <li class="documento">
@@ -143,7 +166,7 @@ function mostrarDocumentos(lista, datos) {
                     <p class="documento__nombre">${d.nombre}
                         <span class="estatus estatus-${subido ? subido.estatus : 'vacio'}">${subido ? ESTADOS[subido.estatus] : 'Sin entregar'}</span>
                     </p>
-                    ${fechas ? `<p class="documento__detalle">Entrega: ${fecha(fechas.inicio)} al ${fecha(fechas.limite)} ${fechas.abierto ? '(abierto)' : '(cerrado)'}</p>` : ''}
+                    ${d.bimestre > 1 && !enOrden && !subido ? `<p class="documento__detalle">Se habilita al entregar el reporte bimestral ${d.bimestre - 1}</p>` : ''}
                     ${subido ? `<p class="documento__detalle">${escapar(subido.nombre_archivo)} · versión ${subido.version_doc}</p>` : ''}
                     ${subido && subido.comentario ? `<p class="documento__comentario">Motivo del rechazo: ${escapar(subido.comentario)}</p>` : ''}
                 </div>

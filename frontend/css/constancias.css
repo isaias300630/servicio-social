@@ -1,0 +1,171 @@
+/* ==========================================================================
+   CONSTANCIAS DE TERMINACION (lista del Jefe de Vinculacion)
+  
+/* Busqueda y filtro */
+.filtros-constancias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filtros-constancias select,
+.filtros-constancias input {
+    font-family: inherit;
+    font-size: 1.4rem;
+    padding: 0.8rem 1.1rem;
+    border: 1px solid var(--borde-suave);
+    border-radius: 0.6rem;
+    background-color: var(--bg-blanco);
+    color: var(--texto-principal);
+}
+
+.filtros-constancias input {
+    min-width: 26rem;
+}
+
+/* Tabla de alumnos */
+.tabla-contenedor {
+    overflow-x: auto;
+}
+
+.tabla-constancias {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+}
+
+.tabla-constancias th {
+    text-align: left;
+    background-color: var(--tecnm-azul);
+    color: #fff;
+    padding: 1rem 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tabla-constancias td {
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--borde-suave);
+    vertical-align: middle;
+    color: var(--texto-principal);
+}
+
+.tabla-constancias tbody tr:hover {
+    background-color: var(--tecnm-azul-suave);
+}
+
+.tabla-constancias td small {
+    display: block;
+    color: var(--texto-secundario);
+    font-size: 1.25rem;
+}
+
+.tabla-constancias strong {
+    color: var(--tecnm-azul);
+}
+
+.tabla-constancias .vacio {
+    text-align: center;
+    color: var(--texto-secundario);
+    padding: 3rem;
+}
+
+.tabla-constancias button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Etiquetas de requisitos */
+.requisitos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.requisito {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    background-color: #E2E8F0;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.requisito--aceptado  { background-color: var(--exito-bg); color: var(--exito); }
+.requisito--pendiente { background-color: var(--advertencia-bg); color: var(--advertencia); }
+.requisito--rechazado { background-color: var(--peligro-bg); color: var(--peligro); }
+
+.leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.6rem;
+    font-size: 1.2rem;
+}
+
+/* Columna de la constancia */
+.folio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+}
+
+.folio strong {
+    font-variant-numeric: tabular-nums;
+}
+
+.folio__botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.folio__botones button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.falta {
+    color: var(--texto-secundario);
+    font-size: 1.3rem;
+}
+
+@media (max-width: 650px) {
+    .filtros-constancias input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    /* En celular cada alumno se ve como una ficha */
+    .tabla-constancias thead {
+        display: none;
+    }
+
+    .tabla-constancias tr {
+        display: block;
+        padding: 1.2rem 0;
+        border-bottom: 1px solid var(--borde-suave);
+    }
+
+    .tabla-constancias td {
+        display: flex;
+        gap: 1rem;
+        padding: 0.5rem 0.8rem;
+        border-bottom: none;
+    }
+
+    .tabla-constancias td::before {
+        content: attr(data-titulo);
+        flex-shrink: 0;
+        width: 8.5rem;
+        font-weight: 600;
+        color: var(--tecnm-azul);
+    }
+
+    .tabla-constancias td.vacio::before {
+        content: none;
+    }
+}
