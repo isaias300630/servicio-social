@@ -1,186 +1,339 @@
-/* Estilos de la pagina de programas */
+/* ==========================================================================
+   GESTIÓN Y BANCO DE PROGRAMAS - IDENTIDAD INSTITUCIONAL TECNM
+   ========================================================================== */
 
 .pagina {
-    max-width: 90rem;
+    flex: 1;
+    width: 100%;
+    max-width: 118rem;
     margin: 0 auto;
-    padding: 3rem 2rem;
+    padding: 3.2rem 2rem 5rem;
+}
+
+/* ==========================================================================
+   ENCABEZADO DE PÁGINA Y NAVEGACIÓN
+   ========================================================================== */
+.encabezado {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 2.2rem 2.8rem;
+    margin-bottom: 2.6rem;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+    border-left: 5px solid var(--tecnm-azul);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.encabezado__rol {
+    display: inline-block;
+    color: var(--tecnm-azul);
+    background-color: var(--tecnm-azul-suave);
+    padding: 0.35rem 1.1rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.6rem;
 }
 
 .titulo {
-    color: rgb(113, 202, 253);
-    font-size: 3rem;
-    text-align: center;
-    margin-bottom: 3rem;
+    color: var(--tecnm-azul);
+    font-size: 2.4rem;
+    text-align: left;
+    margin: 0;
+    line-height: 1.25;
+}
+
+.barra {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   TARJETAS Y CABECERAS DE SECCIÓN
+   ========================================================================== */
+.tarjeta {
+    background-color: var(--bg-blanco);
+    border-radius: var(--radio-borde);
+    padding: 2.6rem 3rem;
+    margin-bottom: 2.6rem;
+    box-shadow: var(--sombra-card);
+    border: 1px solid var(--borde-suave);
+}
+
+.cabecera-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1.4rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--tecnm-azul-suave);
 }
 
 .subtitulo {
-    color: #e0e0e0;
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    color: var(--tecnm-azul);
+    font-size: 1.9rem;
+    margin: 0;
 }
 
-.tarjeta {
-    background-color: rgb(153, 146, 146);
-    border-radius: 1rem;
-    padding: 3rem;
-    margin-bottom: 3rem;
-    box-shadow: 0 1rem 3rem rgba(0,0,0,0.6);
+.nota-obligatorio {
+    font-size: 1.25rem;
+    color: var(--texto-secundario);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   FORMULARIO DE CAPTURA / EDICIÓN
+   ========================================================================== */
+.rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+    column-gap: 2rem;
 }
 
 .campo {
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem;
 }
 
 .campo label {
     display: block;
-    color: #1a1a1a;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+    color: var(--texto-principal);
+    margin-bottom: 0.6rem;
+    font-size: 1.35rem;
+    font-weight: 600;
 }
 
-.campo input {
-    width: 100%;
-    padding: 1.2rem;
-    border-radius: 0.5rem;
-    font-size: 1.6rem;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    color: white;
-    outline: none;
-}
-
-.boton {
-    padding: 1.2rem 2.5rem;
-    background-color: rgb(0, 174, 255);
-    color: black;
-    border: none;
-    border-radius: 0.8rem;
-    font-size: 1.6rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.boton-gris {
-    background-color: #888;
-    margin-left: 1rem;
-}
-
-.tabla {
-    width: 100%;
-    border-collapse: collapse;
-    color: #1a1a1a;
-}
-
-.tabla th, .tabla td {
-    padding: 1.2rem;
-    text-align: left;
-    border-bottom: 1px solid #777;
-    font-size: 1.5rem;
-}
-
-.tabla th {
-    color: #000;
-    font-weight: bold;
-}
-
-.boton-chico {
-    padding: 0.6rem 1.2rem;
-    background-color: rgb(0, 174, 255);
-    color: black;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1.3rem;
-    cursor: pointer;
-    margin-right: 0.5rem;
-}
-
-.boton-rojo {
-    background-color: #e74c3c;
-    color: white;
-}
-
-/* ---- Campos nuevos: selects, textareas, rejilla y buscador ---- */
-
+.campo input,
 .campo select,
 .campo textarea,
 .buscador input,
 .buscador select {
     width: 100%;
-    padding: 1.2rem;
-    border-radius: 0.5rem;
-    font-size: 1.6rem;
+    padding: 1.1rem 1.3rem;
+    border-radius: 0.6rem;
+    font-size: 1.45rem;
     font-family: inherit;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    color: white;
+    background-color: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    color: var(--texto-principal);
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder,
+.buscador input::placeholder {
+    color: #94A3B8;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus,
+.buscador input:focus,
+.buscador select:focus {
+    border-color: var(--tecnm-azul);
+    box-shadow: 0 0 0 3px rgba(27, 57, 106, 0.15);
 }
 
 .campo textarea {
     resize: vertical;
 }
 
-/* Dos columnas en pantalla grande, una en celular */
-.rejilla {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
-    column-gap: 2rem;
-}
-
-.barra {
+.acciones-formulario {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    align-items: center;
+    gap: 1.2rem;
     flex-wrap: wrap;
-    margin-bottom: 2rem;
+    margin-top: 0.8rem;
 }
 
-.barra .boton {
+/* ==========================================================================
+   BOTONES INSTITUCIONALES
+   ========================================================================== */
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.05rem 2rem;
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    border: 1.5px solid var(--tecnm-azul);
+    border-radius: 0.6rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
     text-decoration: none;
+    transition: all 0.2s ease;
 }
 
-.barra .boton-gris {
+.boton:hover {
+    background-color: var(--tecnm-azul-oscuro);
+    border-color: var(--tecnm-azul-oscuro);
+    transform: translateY(-1px);
+}
+
+.boton-outline {
+    background-color: #FFFFFF;
+    color: var(--tecnm-azul);
+    border: 1.5px solid var(--tecnm-azul);
+}
+
+.boton-outline:hover {
+    background-color: var(--tecnm-azul-suave);
+    color: var(--tecnm-azul-oscuro);
+}
+
+.boton-gris {
+    background-color: #F1F5F9;
+    color: var(--texto-principal);
+    border: 1.5px solid #CBD5E1;
     margin-left: 0;
 }
 
+.boton-gris:hover {
+    background-color: #E2E8F0;
+    border-color: #94A3B8;
+    color: #0F172A;
+}
+
+/* Botones de acciones dentro de la tabla */
+.boton-chico {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin-right: 0.4rem;
+    margin-bottom: 0.3rem;
+    transition: background-color 0.2s ease;
+}
+
+.boton-chico:hover {
+    background-color: var(--tecnm-azul-oscuro);
+}
+
+.boton-rojo {
+    background-color: var(--peligro);
+    color: #FFFFFF;
+}
+
+.boton-rojo:hover {
+    background-color: #8E1F2A;
+}
+
+/* ==========================================================================
+   BUSCADOR Y TABLA DE PROGRAMAS
+   ========================================================================== */
 .buscador {
     display: grid;
-    grid-template-columns: 1fr 20rem;
-    gap: 1rem;
+    grid-template-columns: 1fr 22rem;
+    gap: 1.2rem;
     margin-bottom: 2rem;
 }
 
-@media (max-width: 600px) {
-    .buscador {
-        grid-template-columns: 1fr;
-    }
-    .pagina {
-        padding: 2rem 1.6rem;
-    }
-    .tarjeta {
-        padding: 2rem 1.6rem;
-    }
-}
-
-/* La tabla se desliza de lado en celular en vez de desbordarse */
 .tabla-contenedor {
     overflow-x: auto;
+    border: 1px solid var(--borde-suave);
+    border-radius: 0.6rem;
 }
 
-/* Que el folio no se parta en varias lineas */
-.tabla td:first-child {
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--texto-principal);
+    background-color: #FFFFFF;
+}
+
+.tabla thead {
+    background-color: var(--tecnm-azul);
+    color: #FFFFFF;
+}
+
+.tabla th {
+    padding: 1.3rem 1.4rem;
+    text-align: left;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
     white-space: nowrap;
 }
 
+.tabla td {
+    padding: 1.25rem 1.4rem;
+    text-align: left;
+    border-bottom: 1px solid var(--borde-suave);
+    font-size: 1.4rem;
+    vertical-align: middle;
+}
+
+.tabla tbody tr:hover {
+    background-color: #F8FAFC;
+}
+
+.tabla tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla td:first-child {
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--tecnm-azul);
+}
+
+.tabla td:last-child {
+    white-space: nowrap;
+}
+
+/* Badges de Estatus */
 .estatus {
     display: inline-block;
-    padding: 0.3rem 1rem;
-    border-radius: 1rem;
-    font-size: 1.3rem;
-    font-weight: bold;
+    padding: 0.35rem 1rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    font-weight: 700;
     text-transform: capitalize;
 }
 
-.estatus-pendiente { background-color: #f1c40f; color: #000; }
-.estatus-aprobado  { background-color: #2ecc71; color: #000; }
-.estatus-rechazado { background-color: #e74c3c; color: #fff; }
+.estatus-pendiente { background-color: var(--advertencia-bg); color: var(--advertencia); }
+.estatus-aprobado  { background-color: var(--exito-bg); color: var(--exito); }
+.estatus-rechazado { background-color: var(--peligro-bg); color: var(--peligro); }
+
+@media (max-width: 650px) {
+    .encabezado {
+        padding: 2rem;
+    }
+
+    .tarjeta {
+        padding: 2rem 1.6rem;
+    }
+
+    .buscador {
+        grid-template-columns: 1fr;
+    }
+
+    .barra {
+        width: 100%;
+    }
+
+    .barra .boton {
+        flex: 1;
+        text-align: center;
+    }
+}
