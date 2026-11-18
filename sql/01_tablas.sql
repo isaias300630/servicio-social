@@ -23,11 +23,9 @@ create table estudiantes (
     nombrees varchar(100) not null,
     apellido_paterno_es varchar(100) not null,
     apellido_materno_es varchar(100),
-    curp char(18),
     carrera varchar(100),
     semestre int,
     plan_estudios varchar(50),
-    creditos_aprobados decimal(5,2),
     telefono_es varchar(10),
     domicilio_es varchar(255),
     direccion_es varchar(255),
@@ -41,7 +39,6 @@ create table coordinadores (
     nombreco varchar(100) not null,
     apellido_paterno_co varchar(100) not null,
     apellido_materno_co varchar(100),
-    curp_co char(18),
     departamento_co varchar(100)
 )
 go
@@ -52,7 +49,6 @@ create table jefes_vinculacion (
     nombreje varchar(100) not null,
     apellido_paterno_je varchar(100) not null,
     apellido_materno_je varchar(100),
-    curp_je char(18),
     departamento_je varchar(100)
 )
 go
