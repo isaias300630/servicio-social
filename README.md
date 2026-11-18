@@ -136,6 +136,17 @@ Reglas:
 - Solo permite un periodo con estatus `Activo` a la vez; si ya hay otro activo, responde `409` con `requiereConfirmacion: true` para que el Administrador confirme desactivar el anterior.
 - Calcula y guarda automáticamente las fechas de inicio y límite de los **3 reportes bimestrales** en `calendario_reportes` y registra el movimiento en `bitacora_logs`.
 
+## Propuestas propias de alumnos (CU06 y CU07)
+
+Incluye el apartado para que el **Alumno** registre su propuesta propia (`propuesta-propia.html`) y el apartado para que el **Jefe de Oficina de SS** y el **Jefe de Vinculación** las revisen y dictaminen (`propuestas.html`), además del script `sql/11_propuestas.sql`.
+
+| Método y ruta | Rol | Descripción |
+|---|---|---|
+| `GET /api/alumno/propuestas` | Alumno | Consulta los datos del alumno y el historial/estado de sus propuestas propias (`# de folio`, `status de revisión`, `# de control` y todos los datos capturados). |
+| `POST /api/alumno/propuestas` | Alumno | Registra una propuesta propia con todos los datos de empresa y programa, generando automáticamente el folio consecutivo `PP-AAAA-0001`. |
+| `GET /api/propuestas` | Jefe de Oficina de SS / Jefe de Vinculación | Lista todas las propuestas propias de alumnos con los 16 campos solicitados. |
+| `PUT /api/propuestas/:id/dictamen` | Jefe de Oficina de SS / Jefe de Vinculación | Aprueba (inscribiendo automáticamente al alumno en su servicio social) o rechaza (con motivo obligatorio) una propuesta propia pendiente. |
+
 ## Pendientes (lo que falta por hacer)
 - `registro.html` y `dashboard_jefe.html` (el login ya redirige a ellos).
 - Subida de archivos PDF con `multer` hacia la carpeta `uploads/` o Azure Blob Storage.

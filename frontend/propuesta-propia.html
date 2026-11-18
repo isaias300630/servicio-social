@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta Propia | TecNM Campus Culiacán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/alumno.css">
+</head>
+<body>
+
+    <main class="pagina">
+        <header class="encabezado">
+            <div class="encabezado__info">
+                <span class="encabezado__rol" id="encabezadoControl">Alumno · Propuesta Propia</span>
+                <h1 class="encabezado__nombre">Registrar Propuesta Propia</h1>
+                <p class="encabezado__periodo" id="encabezadoAlumno">Captura los datos de la empresa o institución donde deseas realizar tu Servicio Social.</p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="alumno.html" class="boton boton-outline">Volver a Mi Servicio Social</a>
+                <a href="cuenta.html" class="boton boton-outline">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Estado de propuestas enviadas por el alumno -->
+        <section class="tarjeta" id="seccionEstado" hidden>
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Estado de mi Propuesta Propia</h2>
+            </div>
+            <div id="contenidoEstado"></div>
+        </section>
+
+        <!-- Formulario de captura de propuesta propia -->
+        <section class="tarjeta" id="seccionFormulario">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Datos de la Propuesta Propia</h2>
+                <span class="nota-obligatorio">* Todos los campos son obligatorios</span>
+            </div>
+
+            <form id="formPropuesta">
+                <div class="rejilla">
+                    <div class="campo">
+                        <label for="folioVista"># DE FOLIO</label>
+                        <input type="text" id="folioVista" value="Se asigna automáticamente al enviar" disabled>
+                    </div>
+                    <div class="campo">
+                        <label for="estatusVista">STATUS DE REVISIÓN</label>
+                        <input type="text" id="estatusVista" value="Pendiente de revisión" disabled>
+                    </div>
+                    <div class="campo">
+                        <label for="numeroControl"># DE CONTROL</label>
+                        <input type="text" id="numeroControl" disabled>
+                    </div>
+                    <div class="campo">
+                        <label for="nombreEmpresa">NOMBRE DE EMPRESA O INSTITUCIÓN *</label>
+                        <input type="text" id="nombreEmpresa" maxlength="150" placeholder="Nombre oficial de la empresa o dependencia" required>
+                    </div>
+                    <div class="campo">
+                        <label for="area">ÁREA O DEPTO. *</label>
+                        <input type="text" id="area" maxlength="100" placeholder="Ej. Departamento de Sistemas / TI" required>
+                    </div>
+                    <div class="campo">
+                        <label for="origenCapital">ORIGEN DE CAPITAL *</label>
+                        <select id="origenCapital" required>
+                            <option value="">— Selecciona —</option>
+                            <option value="Público">Público</option>
+                            <option value="Privado">Privado</option>
+                            <option value="Social">Social</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="nombreTitular">NOMBRE DE LA PERSONA TITULAR DE LA EMPRESA O JEFE DE DEPARTAMENTO (PERSONA QUE AUTORIZARÁ LA ACEPTACIÓN DEL ALUMNO DENTRO DE LA EMPRESA) *</label>
+                    <input type="text" id="nombreTitular" maxlength="100" placeholder="Nombre completo del titular o jefe que autoriza" required>
+                </div>
+
+                <div class="rejilla">
+                    <div class="campo">
+                        <label for="puestoTitular">PUESTO DEL TITULAR *</label>
+                        <input type="text" id="puestoTitular" maxlength="100" placeholder="Ej. Director General / Gerente" required>
+                    </div>
+                    <div class="campo">
+                        <label for="puestoResponsable">PUESTO DEL RESPONSABLE *</label>
+                        <input type="text" id="puestoResponsable" maxlength="100" placeholder="Ej. Jefe de Área / Coordinador de Sistemas" required>
+                    </div>
+                    <div class="campo">
+                        <label for="nombrePrograma">NOMBRE DEL PROGRAMA O PROYECTO *</label>
+                        <input type="text" id="nombrePrograma" maxlength="150" placeholder="Ej. Desarrollo y mantenimiento de sistemas internos" required>
+                    </div>
+                    <div class="campo">
+                        <label for="alumnosSolicitados"># DE ALUMNOS QUE SOLICITA *</label>
+                        <input type="number" id="alumnosSolicitados" value="1" min="1" max="500" required>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="horarioPerfil">HORARIO / PERFIL REQUERIDO DEL ALUMNO *</label>
+                    <input type="text" id="horarioPerfil" maxlength="255" placeholder="Ej. Lunes a viernes 8:00 a 12:00 hrs · Ingeniería en Sistemas Computacionales" required>
+                </div>
+
+                <div class="campo">
+                    <label for="objetivo">OBJETIVO *</label>
+                    <textarea id="objetivo" rows="3" maxlength="4000" placeholder="Describe el objetivo del programa de servicio social..." required></textarea>
+                </div>
+
+                <div class="campo">
+                    <label for="actividades">ACTIVIDADES A REALIZAR *</label>
+                    <textarea id="actividades" rows="4" maxlength="4000" placeholder="Detalla las actividades que realizarás durante el servicio social..." required></textarea>
+                </div>
+
+                <div class="rejilla">
+                    <div class="campo">
+                        <label for="telefonoContacto">TELÉFONO DE CONTACTO (10 dígitos) *</label>
+                        <input type="tel" id="telefonoContacto" inputmode="numeric" maxlength="10" pattern="\d{10}" placeholder="Ej. 6671234567" required>
+                    </div>
+                    <div class="campo">
+                        <label for="correoContacto">CORREO DE CONTACTO *</label>
+                        <input type="email" id="correoContacto" maxlength="100" placeholder="contacto@empresa.com" required>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label for="domicilio">DOMICILIO *</label>
+                    <input type="text" id="domicilio" maxlength="255" placeholder="Calle, número, colonia, ciudad y C.P. de la empresa o institución" required>
+                </div>
+
+                <div class="acciones-formulario">
+                    <button type="submit" class="boton" id="btnEnviar">Enviar propuesta para revisión</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer-tecnm">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/propuesta-propia.js"></script>
+</body>
+</html>
