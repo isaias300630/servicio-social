@@ -9,7 +9,7 @@ if (!token || !ROLES.includes(usuario.rol)) {
 }
 
 document.getElementById('etiquetaRol').textContent = usuario.rol || 'Validación de Propuestas';
-document.getElementById('irConstancias').hidden = usuario.rol !== 'Jefe de Vinculacion';
+document.getElementById('irConstancias').hidden = false;
 
 const ETIQUETAS = {
     pendiente: 'Pendiente',

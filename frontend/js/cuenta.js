@@ -3,7 +3,7 @@
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 if (!token) window.location.href = 'index.html';
-const paneles = { 'Alumno': 'alumno.html', 'Administrador': 'admin.html', 'Jefe de Oficina de SS': 'jefe.html', 'Jefe de Vinculacion': 'validar.html' };
+const paneles = { 'Alumno': 'alumno.html', 'Administrador': 'admin.html', 'Jefe de Oficina de SS': 'jefe.html', 'Jefe de Vinculacion': 'jefe.html' };
 const enlaceVolver = document.getElementById('volverPanel');
 if (paneles[usuario.rol]) {
     enlaceVolver.href = paneles[usuario.rol];
