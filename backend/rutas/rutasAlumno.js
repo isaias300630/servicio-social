@@ -113,7 +113,7 @@ router.post('/alumno/documentos', (req, res) => {
     subida(req, res, async (errSubida) => {
         const archivo = req.file;
 
-        // Pasa de 5 MB, no es .pdf o no empieza con "%PDF"
+        // Pasa de 5 MB, no es .pdf 
         if (errSubida || !archivo || !archivo.originalname.toLowerCase().endsWith('.pdf')
             || archivo.buffer.subarray(0, 4).toString() !== '%PDF') {
             return res.status(400).json({ success: false, mensaje: MENSAJE_PDF });
