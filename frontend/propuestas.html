@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisar Propuestas Propias | TecNM Campus Culiacán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/programas.css">
+    <link rel="stylesheet" href="css/jefe.css">
+    <link rel="stylesheet" href="css/alumno.css">
+</head>
+<body>
+
+    <main class="pagina">
+        <header class="encabezado">
+            <div>
+                <p class="encabezado__rol" id="etiquetaRol">Validación de Propuestas Propias (CU07)</p>
+                <h1 class="encabezado__nombre">Propuestas Propias de Alumnos</h1>
+                <p class="encabezado__periodo">Revisa los datos capturados por los alumnos y aprueba o rechaza su propuesta propia.</p>
+            </div>
+            <nav class="barra barra--derecha">
+                <a href="jefe.html" class="boton boton-outline" id="volverPanel">Volver al panel</a>
+                <a href="constancias.html" class="boton boton-outline" id="irConstancias" hidden>Constancias</a>
+                <a href="validar.html" class="boton boton-outline">Validar documentos</a>
+                <a href="cuenta.html" class="boton boton-outline">Cambiar contraseña</a>
+                <a href="#" class="boton boton-gris" id="cerrarSesion">Cerrar sesión</a>
+            </nav>
+        </header>
+
+        <!-- Resumen de propuestas propias -->
+        <section class="resumen">
+            <div class="dato">
+                <span class="dato__numero" id="totalPropuestas">–</span>
+                <span class="dato__texto">Propuestas totales</span>
+            </div>
+            <div class="dato dato--pendiente">
+                <span class="dato__numero" id="totalPendientes">–</span>
+                <span class="dato__texto">Pendientes de revisar</span>
+            </div>
+            <div class="dato dato--aprobado">
+                <span class="dato__numero" id="totalAprobadas">–</span>
+                <span class="dato__texto">Aprobadas</span>
+            </div>
+            <div class="dato dato--rechazado">
+                <span class="dato__numero" id="totalRechazadas">–</span>
+                <span class="dato__texto">Rechazadas</span>
+            </div>
+        </section>
+
+        <section class="tarjeta">
+            <div class="cabecera-seccion">
+                <h2 class="subtitulo">Listado de propuestas propias</h2>
+            </div>
+
+            <div class="buscador">
+                <input type="search" id="buscar" placeholder="Buscar por # de folio, # de control, alumno, empresa o área...">
+                <select id="filtroEstatus">
+                    <option value="pendiente">Pendientes de revisión</option>
+                    <option value="">Todos los estatus</option>
+                    <option value="aprobado">Aprobadas</option>
+                    <option value="rechazado">Rechazadas</option>
+                </select>
+            </div>
+
+            <div id="listaPropuestas">
+                <p class="nota">Cargando propuestas propias...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-tecnm">
+        <div class="footer-tecnm__contenedor">
+            <div>
+                <strong>Instituto Tecnológico de Culiacán</strong> · Juan de Dios Bátiz 310 Pte., Col. Guadalupe, Culiacán, Sinaloa.
+            </div>
+            <div>
+                © 2026 Tecnológico Nacional de México
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/propuestas.js"></script>
+</body>
+</html>
