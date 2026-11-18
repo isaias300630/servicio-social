@@ -18,7 +18,7 @@
         <!-- Encabezado con Datos del Jefe de Oficina -->
         <header class="encabezado">
             <div>
-                <p class="encabezado__rol">Jefe de Oficina de Servicio Social</p>
+                <p class="encabezado__rol" id="etiquetaRol">Jefe de Oficina de Servicio Social</p>
                 <h1 class="encabezado__nombre" id="saludo">Bienvenido</h1>
                 <p class="encabezado__periodo" id="periodoActivo">Consultando periodo escolar...</p>
             </div>
@@ -74,13 +74,18 @@
             </a>
 
             <a class="funcion" href="propuestas.html">
-                <span class="funcion__titulo">Propuestas propias</span>
+                <span class="funcion__titulo">Propuestas propias <span class="globo" id="globoPropuestas" hidden></span></span>
                 <span class="funcion__texto">Revisa, aprueba o rechaza las propuestas propias subidas por los alumnos.</span>
             </a>
 
             <a class="funcion" href="validar.html">
                 <span class="funcion__titulo">Validar documentos <span class="globo" id="globoDocumentos" hidden></span></span>
                 <span class="funcion__texto">Acepta o rechaza los PDF que suben los alumnos.</span>
+            </a>
+
+            <a class="funcion" href="constancias.html">
+                <span class="funcion__titulo">Constancias de terminación</span>
+                <span class="funcion__texto">Sube y consulta las constancias oficiales de liberación en PDF.</span>
             </a>
 
             <a class="funcion" href="reporte-bimestral.html">

@@ -118,12 +118,31 @@ async function mostrarPrograma(alumno, programa) {
         return;
     }
 
-    const programas = await (await pedir('/api/alumno/programas')).json();
+    const [programas, datosProp] = await Promise.all([
+        pedir('/api/alumno/programas').then(r => r.json()),
+        pedir('/api/alumno/propuestas').then(r => r.ok ? r.json() : { propuestas: [] }).catch(() => ({ propuestas: [] }))
+    ]);
+
+    const ultimaProp = (datosProp.propuestas && datosProp.propuestas[0]) || null;
+    const bloquePropuesta = ultimaProp
+        ? `<div class="nota" style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+               <span>
+                   <strong>Tu propuesta propia (${escapar(ultimaProp.folio || 'S/F')} — ${escapar(ultimaProp.nombre_empresa)}):</strong>
+                   Estatus <strong style="text-transform:uppercase;">${escapar(ultimaProp.estatus)}</strong>
+                   ${ultimaProp.motivo_rechazo ? ` · Motivo: ${escapar(ultimaProp.motivo_rechazo)}` : ''}
+               </span>
+               <a href="propuesta-propia.html" class="boton-chico">Ver mi propuesta propia</a>
+           </div>`
+        : `<div class="nota" style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+               <span>¿Quieres realizar tu Servicio Social en una empresa o institución que no está en el banco?</span>
+               <a href="propuesta-propia.html" class="boton-chico">Subir propuesta propia</a>
+           </div>`;
+
     if (programas.length === 0) {
-        caja.innerHTML = '<p class="nota">Por ahora no hay programas disponibles para tu plan.</p>';
+        caja.innerHTML = bloquePropuesta + '<p class="nota">Por ahora no hay programas del banco disponibles para tu plan.</p>';
         return;
     }
-    caja.innerHTML = '<p class="nota">Aún no tienes programa. Elige uno:</p><div class="programas">' +
+    caja.innerHTML = bloquePropuesta + '<p class="nota">Aún no tienes programa. Elige uno del banco o sube tu propuesta propia:</p><div class="programas">' +
         programas.map(p => `
             <article class="programa">
                 <h3 class="programa__nombre">${escapar(p.nombre_programa)}</h3>

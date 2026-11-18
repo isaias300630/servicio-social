@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Todas las rutas /api/reportes piden sesion de Jefe de Oficina.
 router.use('/reportes', verificarSesion, (req, res, next) => {
-    if (req.usuario.rol !== 'Jefe de Oficina de SS') {
+    if (req.usuario.rol !== 'Jefe de Oficina de SS' && req.usuario.rol !== 'Jefe de Vinculacion') {
         return res.status(403).json({ success: false, mensaje: 'Solo el Jefe de Oficina de SS puede ver este reporte' });
     }
     next();

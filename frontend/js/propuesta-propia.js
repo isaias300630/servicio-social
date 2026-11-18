@@ -58,11 +58,10 @@ function mostrarEstadoPropuesta(alumno, propuestas) {
     const seccionFormulario = document.getElementById('seccionFormulario');
 
     if (propuestas.length === 0) {
-        seccionEstado.hidden = true;
-        seccionFormulario.hidden = Boolean(alumno.tiene_servicio_activo);
+        seccionEstado.hidden = !alumno.tiene_servicio_activo;
+        seccionFormulario.hidden = false;
         if (alumno.tiene_servicio_activo) {
-            seccionEstado.hidden = false;
-            contenidoEstado.innerHTML = '<p class="nota">Ya cuentas con un Servicio Social activo. Consulta los detalles en <a href="alumno.html"><strong>Mi Servicio Social</strong></a>.</p>';
+            contenidoEstado.innerHTML = '<p class="nota">Nota: actualmente ya cuentas con un Servicio Social activo en <a href="alumno.html"><strong>Mi Servicio Social</strong></a>.</p>';
         }
         return;
     }
@@ -70,10 +69,7 @@ function mostrarEstadoPropuesta(alumno, propuestas) {
     seccionEstado.hidden = false;
     const p = propuestas[0];
     const tienePendiente = p.estatus === 'pendiente';
-    const fueAprobada = p.estatus === 'aprobado';
-
-    // Si ya tiene una propuesta en revision o aprobada, o ya tiene servicio activo, ocultamos el formulario nuevo.
-    seccionFormulario.hidden = Boolean(alumno.tiene_servicio_activo || tienePendiente || fueAprobada);
+    seccionFormulario.hidden = false;
 
     contenidoEstado.innerHTML = propuestas.map(prop => `
         <article class="programa" style="margin-bottom: 1.5rem;">

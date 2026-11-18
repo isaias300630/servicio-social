@@ -2,7 +2,7 @@
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
-if (!token || usuario.rol !== 'Jefe de Vinculacion') {
+if (!token || (usuario.rol !== 'Jefe de Oficina de SS' && usuario.rol !== 'Jefe de Vinculacion')) {
     window.location.href = 'index.html';
 }
 
