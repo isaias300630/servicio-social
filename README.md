@@ -147,9 +147,6 @@ Entra a: **http://localhost:3000/index.html**
 | `POST /api/constancias` | Jefe Oficina / Vinculación | Sube la Constancia de Terminación en PDF asignando folio único `ITC-SS-AAAA-0001` y completando las horas del expediente (CU15). |
 | `GET /api/constancias/:id/pdf` | Jefe / Alumno dueño | Descarga el PDF de la Constancia de Terminación. |
 
----
 
-## Casos de uso pendientes por implementar
-- **CU08 (RF-08):** Generación y expedición de formatos oficiales en archivo Word editable (`.docx`) con los datos precargados del alumno y su programa.
-- **CU14 (RF-14):** Módulo en el panel del Administrador para cambiar el rol o estado (`Activo` / `Inactivo`) de cuentas existentes con confirmación explícita y ejecución de respaldos.
-- **CU02 (Extensión 5b):** Activar el bloqueo temporal de 15 minutos tras 3 intentos fallidos de inicio de sesión usando las columnas `intentos_fallidos` y `bloqueado_hasta` de la tabla `usuarios`.
+
+usuarios`.
