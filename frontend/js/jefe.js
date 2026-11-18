@@ -2,7 +2,7 @@
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
-if (!token || usuario.rol !== 'Jefe de Oficina de SS') {
+if (!token || (usuario.rol !== 'Jefe de Oficina de SS' && usuario.rol !== 'Jefe de Vinculacion')) {
     window.location.href = 'index.html';
 }
 
@@ -14,6 +14,8 @@ function escapar(texto) {
 }
 
 document.getElementById('saludo').textContent = 'Hola, ' + (usuario.nombre || 'Jefe de Oficina');
+const elRol = document.getElementById('etiquetaRol');
+if (elRol && usuario.rol) elRol.textContent = usuario.rol;
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         mostrarResumen(programas);
         contarDocumentos();
+        contarPropuestasPropias();
         mostrarPendientes(programas);
 
         const activo = Array.isArray(periodos) && periodos.find(p => p.estatus_activo_pe);
@@ -104,5 +107,22 @@ async function contarDocumentos() {
     if (documentos.length > 0) {
         globo.textContent = documentos.length;
         globo.hidden = false;
+    }
+}
+
+// Cuantas propuestas propias de alumnos esperan revision
+async function contarPropuestasPropias() {
+    try {
+        const respuesta = await fetch('/api/propuestas', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (!respuesta.ok) return;
+        const propuestas = await respuesta.json();
+        const pendientes = propuestas.filter(p => p.estatus === 'pendiente').length;
+        const globo = document.getElementById('globoPropuestas');
+        if (globo && pendientes > 0) {
+            globo.textContent = pendientes;
+            globo.hidden = false;
+        }
+    } catch (e) {
+        console.error(e);
     }
 }

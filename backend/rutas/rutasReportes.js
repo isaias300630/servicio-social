@@ -1,5 +1,7 @@
 // Reporte de alumnos activos que no han entregado su reporte bimestral (CU12).
-// Solo lo usa el Jefe de Oficina de SS porque muestra datos personales de todos los alumnos.
+// Disponible para el Jefe de Oficina de SS y el Jefe de Vinculacion.
+// Usa consultas parametrizadas directas y sp_RegistrarBitacora para funcionar
+// sin depender de que se haya ejecutado CREATE PROCEDURE en Azure SQL.
 const express = require('express');
 const { sql, getPool } = require('../db');
 const verificarSesion = require('./verificarSesion');
@@ -8,19 +10,101 @@ const { esIdValido, esEnteroEnRango } = require('../validaciones');
 
 const router = express.Router();
 
-// Todas las rutas /api/reportes piden sesion de Jefe de Oficina.
+const ROLES_JEFES = ['Jefe de Oficina de SS', 'Jefe de Vinculacion'];
+
 router.use('/reportes', verificarSesion, (req, res, next) => {
-    if (req.usuario.rol !== 'Jefe de Oficina de SS') {
-        return res.status(403).json({ success: false, mensaje: 'Solo el Jefe de Oficina de SS puede ver este reporte' });
+    if (!ROLES_JEFES.includes(req.usuario.rol)) {
+        return res.status(403).json({
+            success: false,
+            mensaje: 'Solo el Jefe de Oficina de SS o el Jefe de Vinculación pueden ver este reporte'
+        });
     }
     next();
 });
+
+const SQL_REPORTE = `
+    if @id_periodo is null
+        select @id_periodo = id_periodo from periodos_escolares where estatus_activo_pe = 1;
+
+    if @id_periodo is null
+        throw 50404, N'No hay un periodo escolar activo', 1;
+
+    declare @nombre_periodo varchar(50) = (select nombre_periodo from periodos_escolares where id_periodo = @id_periodo);
+    if @nombre_periodo is null
+        throw 50404, N'El periodo seleccionado no existe', 1;
+
+    declare @inicio date, @limite date;
+    select @inicio = fecha_inicio_cr, @limite = fecha_limite_cr
+    from calendario_reportes
+    where id_periodo = @id_periodo and numero_bimestre = @bimestre;
+
+    declare @tipo varchar(50) = 'reporte_bimestral_' + cast(@bimestre as varchar(1));
+
+    declare @alumnos table (
+        numero_control varchar(20),
+        nombre_completo varchar(320),
+        correo varchar(100),
+        carrera varchar(100),
+        semestre int,
+        programa varchar(150),
+        institucion varchar(150),
+        estatus_reporte varchar(50),
+        comentario varchar(max)
+    );
+
+    insert into @alumnos
+    select e.numero_control,
+           ltrim(rtrim(e.nombrees + ' ' + e.apellido_paterno_es + ' ' + isnull(e.apellido_materno_es, ''))),
+           u.correousu,
+           e.carrera,
+           e.semestre,
+           p.nombre_programa,
+           d.nombre_empresa_de,
+           isnull(ult.estatus, 'sin entrega'),
+           ult.comentario
+    from expedientes x
+    inner join estudiantes e on e.numero_control = x.numero_control
+    inner join usuarios u on u.id_usuario = e.id_usuario
+    left join programas_ss p on p.id_programa = x.id_programa
+    left join dependencias d on d.id_dependencia = p.id_dependencia
+    outer apply (
+        select top 1 doc.estatus_validacion_do as estatus, doc.observaciones_doc as comentario
+        from documentos doc
+        where doc.id_expediente = x.id_expediente
+          and doc.tipo_documento = @tipo
+        order by doc.version_doc desc, doc.id_documento desc
+    ) ult
+    where x.estatus_ex = 'activo'
+      and x.id_periodo = @id_periodo
+      and (@carrera is null or e.carrera = @carrera);
+
+    select @nombre_periodo as periodo,
+           @bimestre as bimestre,
+           @inicio as fecha_inicio,
+           @limite as fecha_limite,
+           @carrera as carrera,
+           count(*) as total_activos,
+           isnull(sum(case when estatus_reporte in ('pendiente', 'aceptado') then 1 else 0 end), 0) as entregados,
+           isnull(sum(case when estatus_reporte in ('pendiente', 'aceptado') then 0 else 1 end), 0) as sin_entregar
+    from @alumnos;
+
+    select numero_control, nombre_completo, correo, carrera, semestre, programa, institucion,
+           estatus_reporte, comentario
+    from @alumnos
+    where estatus_reporte not in ('pendiente', 'aceptado')
+    order by carrera, nombre_completo;
+`;
 
 // Carreras para el filtro de la pantalla.
 router.get('/reportes/carreras', async (req, res) => {
     try {
         const pool = await getPool();
-        const r = await pool.request().execute('sp_ListarCarreras');
+        const r = await pool.request().query(`
+            select distinct carrera
+            from estudiantes
+            where carrera is not null
+            order by carrera
+        `);
         res.json(r.recordset.map(fila => fila.carrera));
     } catch (err) {
         responderErrorSql(res, err, 'Error al listar carreras');
@@ -28,8 +112,6 @@ router.get('/reportes/carreras', async (req, res) => {
 });
 
 // Alumnos sin reporte bimestral.
-// Parametros en la URL: bimestre (1 a 3, obligatorio), periodo (id, opcional: sin el se usa el activo)
-// y carrera (opcional).
 router.get('/reportes/sin-reporte-bimestral', async (req, res) => {
     const { bimestre, periodo, carrera } = req.query;
 
@@ -45,17 +127,26 @@ router.get('/reportes/sin-reporte-bimestral', async (req, res) => {
     }
 
     try {
-        // El procedimiento tambien deja la consulta en la bitacora.
         const pool = await getPool();
         const r = await pool.request()
             .input('id_periodo', sql.Int, periodo ? Number(periodo) : null)
             .input('bimestre', sql.Int, Number(bimestre))
             .input('carrera', sql.VarChar(100), carreraLimpia || null)
-            .input('id_usuario', sql.Int, req.usuario.id_usuario)
-            .execute('sp_ReporteSinReporteBimestral');
+            .query(SQL_REPORTE);
 
         const resumen = r.recordsets[0][0];
         const alumnos = r.recordsets[1];
+
+        try {
+            await pool.request()
+                .input('id_usuario', sql.Int, req.usuario.id_usuario)
+                .input('accion', sql.VarChar(255), 'Reporte de alumnos sin reporte bimestral')
+                .input('detalles', sql.VarChar(sql.MAX),
+                    `${resumen.periodo}, bimestre ${resumen.bimestre}, carrera: ${resumen.carrera || 'todas'}`)
+                .execute('sp_RegistrarBitacora');
+        } catch (errBit) {
+            console.error('No se pudo registrar en la bitacora:', errBit.message);
+        }
 
         res.json({
             success: true,

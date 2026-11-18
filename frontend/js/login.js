@@ -47,7 +47,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             } else if (data.rol === 'Jefe de Oficina de SS') {
                 window.location.href = 'jefe.html';
             } else if (data.rol === 'Jefe de Vinculacion') {
-                window.location.href = 'validar.html';
+                window.location.href = 'jefe.html';
             } else {
                 alert('Este usuario no tiene una pantalla asignada.');
             }

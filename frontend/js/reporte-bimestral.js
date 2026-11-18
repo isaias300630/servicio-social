@@ -2,7 +2,7 @@
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
-if (!token || usuario.rol !== 'Jefe de Oficina de SS') {
+if (!token || (usuario.rol !== 'Jefe de Oficina de SS' && usuario.rol !== 'Jefe de Vinculacion')) {
     window.location.href = 'index.html';
 }
 
@@ -50,14 +50,20 @@ async function cargarFiltros() {
         const periodos = await resPeriodos.json();
         const carreras = await resCarreras.json();
 
+        if (!resPeriodos.ok || !Array.isArray(periodos)) {
+            return alert(periodos.mensaje || 'Error al cargar los periodos.');
+        }
+
         selectPeriodo.innerHTML = periodos.map(p =>
             `<option value="${Number(p.id_periodo)}"${p.estatus_activo_pe ? ' selected' : ''}>` +
             `${escapar(p.nombre_periodo)}${p.estatus_activo_pe ? ' (activo)' : ''}</option>`
         ).join('');
 
-        selectCarrera.insertAdjacentHTML('beforeend', carreras.map(c =>
-            `<option value="${escapar(c)}">${escapar(c)}</option>`
-        ).join(''));
+        if (resCarreras.ok && Array.isArray(carreras)) {
+            selectCarrera.insertAdjacentHTML('beforeend', carreras.map(c =>
+                `<option value="${escapar(c)}">${escapar(c)}</option>`
+            ).join(''));
+        }
     } catch (error) {
         console.error(error);
         alert('No se pudieron cargar los filtros. Revisa tu conexión.');

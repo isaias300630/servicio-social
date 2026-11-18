@@ -15,7 +15,7 @@ const MENSAJE_PDF = 'Solo se permiten archivos en formato PDF con un peso máxim
 
 // Candado: solo el Jefe de Vinculacion sube constancias.
 function soloVinculacion(req, res, next) {
-    if (req.usuario.rol !== 'Jefe de Vinculacion') {
+    if (req.usuario.rol !== 'Jefe de Oficina de SS' && req.usuario.rol !== 'Jefe de Vinculacion') {
         return res.status(403).json({ success: false, mensaje: 'Solo el Jefe de Vinculación puede enviar constancias' });
     }
     next();

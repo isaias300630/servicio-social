@@ -12,30 +12,13 @@
 </head>
 <body>
 
-    <!-- Encabezado Institucional Blanco Limpio -->
-    <header class="header-institucional">
-        <div class="header-institucional__contenedor">
-            <div class="header-institucional__identidad">
-                <div class="header-institucional__escudo">
-                    TecNM
-                    <span>ITC</span>
-                </div>
-                <div class="header-institucional__titulos">
-                    <h2>Tecnológico Nacional de México</h2>
-                    <p>Instituto Tecnológico de Culiacán — Oficina de Servicio Social</p>
-                </div>
-            </div>
-            <div class="header-institucional__badge">
-                Administración de Servicio Social
-            </div>
-        </div>
-    </header>
+
 
     <main class="pagina">
         <!-- Encabezado con Datos del Jefe de Oficina -->
         <header class="encabezado">
             <div>
-                <p class="encabezado__rol">Jefe de Oficina de Servicio Social</p>
+                <p class="encabezado__rol" id="etiquetaRol">Jefe de Oficina de Servicio Social</p>
                 <h1 class="encabezado__nombre" id="saludo">Bienvenido</h1>
                 <p class="encabezado__periodo" id="periodoActivo">Consultando periodo escolar...</p>
             </div>
@@ -90,9 +73,19 @@
                 <span class="funcion__texto">Aprueba o rechaza programas y propuestas de alumnos.</span>
             </a>
 
+            <a class="funcion" href="propuestas.html">
+                <span class="funcion__titulo">Propuestas propias <span class="globo" id="globoPropuestas" hidden></span></span>
+                <span class="funcion__texto">Revisa, aprueba o rechaza las propuestas propias subidas por los alumnos.</span>
+            </a>
+
             <a class="funcion" href="validar.html">
                 <span class="funcion__titulo">Validar documentos <span class="globo" id="globoDocumentos" hidden></span></span>
                 <span class="funcion__texto">Acepta o rechaza los PDF que suben los alumnos.</span>
+            </a>
+
+            <a class="funcion" href="constancias.html">
+                <span class="funcion__titulo">Constancias de terminación</span>
+                <span class="funcion__texto">Sube y consulta las constancias oficiales de liberación en PDF.</span>
             </a>
 
             <a class="funcion" href="reporte-bimestral.html">
